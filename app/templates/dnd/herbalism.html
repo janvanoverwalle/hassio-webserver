@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-sm">
+      <h2>Gathering</h2>
+
+      <hr>
+
+      <form method=post>
+        <div class="input-group mb-3 w-75">
+          <div class="input-group-prepend">
+            <span class="input-group-text label" id="basic-addon1">Player Roll</span>
+          </div>
+          <input type="number" class="form-control" placeholder="0" aria-label="search_roll" aria-describedby="basic-addon1">
+        </div>
+
+        <div class="input-group mb-3 w-75">
+          <div class="input-group-prepend">
+            <span class="input-group-text label" id="basic-addon2">Terrain</span>
+          </div>
+          <select name="terrain" class="custom-select" aria-describedby="basic-addon2">
+            {% if terrain_options %}
+            {% for option in terrain_options %}
+            <option value="{{ option.value }}">{{ option.name }}</option>
+            {% endfor %}
+            {% else %}
+            <option value="unknown">unknown</option>
+            {% endif %}
+          </select>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Generate">
+      </form>
+
+      {% if data %}
+      <hr>
+
+      <div>
+        <h3>Result</h3>
+        <p>{{ data.msg }}</p>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <div class="col-sm">
+      <h2>Identifying</h2>
+      <hr>
+      <p>WIP</p>
+    </div>
+  <div class="row">
+</div>
+<!-- /container -->
+{% endblock %}
