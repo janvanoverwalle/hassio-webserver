@@ -17,6 +17,6 @@ COPY . /webserver
 RUN apk add --no-cache python3
 
 # Install any dependencies
-RUN pip install -r requirements.txt
+#RUN pip3 install -r requirements.txt
 
 CMD [ "/run.sh" ]

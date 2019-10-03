@@ -1,2 +1,2 @@
-# python app/app.py
-ls -la app
+#python3 app/app.py
+ls -la
