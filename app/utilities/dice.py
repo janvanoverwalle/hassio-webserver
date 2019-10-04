@@ -1,4 +1,5 @@
 """ Dice module """
+import random
 
 
 class Dice(object):
@@ -97,3 +98,10 @@ class Dice(object):
             self._mod += int(step)
         except (TypeError, ValueError):
             self._mod += f'{step:+}'
+
+    def roll(self):
+        res = 0
+        for _ in range(self._amount):
+            res += random.randrange(self._type) + 1
+        res += self._mod
+        return res
