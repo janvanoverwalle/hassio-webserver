@@ -14,9 +14,9 @@ WORKDIR /webserver
 COPY . /webserver
 
 # Install python 3
-RUN apk add --no-cache python3
-
-# Install any dependencies
-#RUN pip3 install -r requirements.txt
+RUN apk add --no-cache python3 && \
+	python3 -m ensurepip && \
+	pip3 install --no-cache --upgrade pip setuptools wheel && \
+	pip3 install -r requirements.txt
 
 CMD [ "/run.sh" ]
