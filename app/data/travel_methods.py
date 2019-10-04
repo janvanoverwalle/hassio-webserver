@@ -39,5 +39,5 @@ class TravelMethods(object):
         return cls._DCS.get(travel_method.lower())
 
     @classmethod
-    def gather(cls, travel_method, roll):
+    def is_gathering_successful(cls, travel_method, roll):
         return int(roll) >= cls.dc(travel_method)

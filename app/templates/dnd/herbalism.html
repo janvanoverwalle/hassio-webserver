@@ -54,10 +54,18 @@
         <div class="mt-4">
           <h4 class="text-{{ gathering_result_class }}">Result</h4>
             {% if gathering_successful %}
-              <p>Succesfully gathered {{ amount }} {{ ingredient.name }}</p>
-              {% if remarks %}
-              <p>{{ remarks }}</p>
-              {% endif %}
+              <p>Player rolled {{ gathering_roll }}</p>
+              {% for ingredient in ingredients %}
+                <p>
+                  {% if ingredient.msg %}
+                  <span class="text-warning">{{ ingredient.msg }}</span>
+                  {% endif %}
+                  <span>Succesfully gathered {{ ingredient.amount }} {{ ingredient.ingredient.name }}</span>
+                </p>
+                {% if ingredient.remarks %}
+                <p>{{ ingredient.remarks }}</p>
+                {% endif %}
+              {% endfor %}
             {% else %}
             <p>{{ msg }}</p>
             {% endif %}
@@ -70,7 +78,51 @@
       <h2>Identifying</h2>
       <hr>
       <div class="w-100 pl-2 pr-4">
-        <p>WIP</p>
+        <form method=post>
+          <!-- Player Roll input -->
+          <div class="input-group mb-3 w-100">
+            <div class="input-group-prepend">
+              <span class="input-group-text label" id="identify_roll">Player Roll</span>
+            </div>
+            <input type="number" class="form-control" placeholder="0" name="identify_roll" aria-label="identify_roll" aria-describedby="identify_roll">
+          </div>
+
+          <!-- Travel Method input -->
+          <div class="input-group mb-3 w-100">
+            <div class="input-group-prepend">
+              <span class="input-group-text label" id="identify_ingredient">Ingredient</span>
+            </div>
+            <select name="identify_ingredient" class="custom-select" aria-describedby="identify_ingredient">
+              {% if ingredient_options %}
+              {% for option in ingredient_options %}
+              <option value="{{ option.value }}">{{ option.name }}</option>
+              {% endfor %}
+              {% else %}
+              <option value="unknown">???</option>
+              {% endif %}
+            </select>
+          </div>
+
+          <input type="submit" class="btn btn-primary" value="Identify">
+        </form>
+
+        {% if identify_result_class %}
+        <!--<hr class="d-none d-md-block">-->
+        <div class="mt-4">
+          <h4 class="text-{{ identify_result_class }}">Result</h4>
+            {% if identify_successful %}
+              <p>Player rolled {{ identify_roll }}</p>
+              <h5>{{ ingredient.name }}</h5>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.description }}</i></p>
+              {% if show_details %}
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details }}</i></p>
+              {% endif %}
+            {% else %}
+            <p>{{ msg }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+      </div>
       </div>
     </div> <!-- column -->
   </div> <!-- row -->

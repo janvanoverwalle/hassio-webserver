@@ -15,8 +15,8 @@ class TerrainTypes(object):
     SPECIAL = 'Special'
 
     @classmethod
-    def to_list(cls):
-        return sorted([
+    def to_list(cls, exclude=None):
+        res_list = sorted([
             cls.MOST,
             cls.ARCTIC,
             cls.COASTAL,
@@ -30,3 +30,13 @@ class TerrainTypes(object):
             cls.UNDERWATER,
             cls.SPECIAL
         ])
+
+        if exclude:
+            if not isinstance(exclude, (list, tuple)):
+                exclude = list(exclude)
+            for e in exclude:
+                if e not in res_list:
+                    continue
+                res_list.remove(e)
+
+        return res_list
