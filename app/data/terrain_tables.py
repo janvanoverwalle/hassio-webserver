@@ -1,7 +1,7 @@
 from .ingredients import Ingredients
 from .terrain_types import TerrainTypes
 from .terrain_ingredients import TerrainIngredient
-from utilities.dice import Dice
+from ..utilities.dice import Dice
 import random
 
 

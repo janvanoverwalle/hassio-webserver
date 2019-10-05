@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request
-from data.terrain_types import TerrainTypes
-from data.travel_methods import TravelMethods
-from data.http_methods import HttpMethods
-from data.bootstrap_helper import BootstrapContextualClasses
-from data.terrain_tables import TerrainTables
-from data.ingredients import Ingredients
-from utilities.generic import create_select_data
-from utilities.dice import Dice
+from .data.terrain_types import TerrainTypes
+from .data.travel_methods import TravelMethods
+from .data.http_methods import HttpMethods
+from .data.bootstrap_helper import BootstrapContextualClasses
+from .data.terrain_tables import TerrainTables
+from .data.ingredients import Ingredients
+from .utilities.generic import create_select_data
+from .utilities.dice import Dice
 
 app = Flask(__name__)
 
