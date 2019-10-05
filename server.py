@@ -17,6 +17,7 @@ def print_help(exit_code=None):
 
 def main(argv):
     port = 8000
+    host = '0.0.0.0'
 
     try:
         opts, args = getopt(argv, 'hp:', ['help', 'port='])
@@ -33,7 +34,8 @@ def main(argv):
                 print(f'Error: "{arg}" is not a valid port number')
                 sys.exit(2)
 
-    serve(app, host='0.0.0.0', port=port)
+    print(f'Serving on port {port}')
+    serve(app, host=host, port=port)
 
 
 if __name__ == '__main__':
