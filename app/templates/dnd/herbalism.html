@@ -65,10 +65,8 @@
                 {% if ingredient.remarks %}
                 <p>{{ ingredient.remarks }}</p>
                 {% endif %}
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.description }}</i></p>
-                {% if show_details %}
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details }}</i></p>
-                {% endif %}
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.ingredient.description }}</i></p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.ingredient.details }}</i></p>
               {% endfor %}
             {% else %}
             <p>{{ msg }}</p>
