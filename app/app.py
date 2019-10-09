@@ -11,9 +11,24 @@ from .utilities.dice import Dice
 app = Flask(__name__)
 
 
-def gathering(gathering_roll, data_dict, args):
+def gathering(data_dict, args):
+    gathering_roll = args.get('gathering_roll', 0)
+    if not gathering_roll:
+        gathering_roll = 0
     terrain_type = args.get('terrain_type')
     travel_method = args.get('travel_method')
+
+    data_dict['prev_gather_roll'] = gathering_roll
+    for o in data_dict['terrain_options']:
+        if o['value'] == terrain_type:
+            o['selected'] = 'selected'
+            break
+    for o in data_dict['travel_options']:
+        if o['value'] == travel_method:
+            o['selected'] = 'selected'
+            break
+
+    app.logger.info(f'(Gathering) { { k: v for k, v in args.items() } }')
 
     gathering_successful = TravelMethods.is_gathering_successful(travel_method, gathering_roll)
     data_dict['gathering_successful'] = gathering_successful
@@ -32,28 +47,37 @@ def gathering(gathering_roll, data_dict, args):
             'ingredient': ingredient.ingredient.to_dict(),
             'amount': ingredient.apply_multiplier(Dice('1d4').roll()),
             'remarks': ingredient.remarks,
-            'msg': 'Wow! ' if special else ''
+            'msg': 'Wow!' if special else ''
         }
         data_dict['ingredients'].append(tmp_dict)
+
         if ingredient.additional:
             tmp_dict = {
-                'ingredient': ingredient.additional.ingredient.to_dict(),
-                'amount': ingredient.additional.apply_multiplier(Dice('1d4').roll()),
-                'remarks': ingredient.additional.remarks,
-                'msg': 'Extra! '
+                'ingredient': ingredient.additional.to_dict(),
+                'amount': 1,
+                'msg': 'Extra!'
             }
             data_dict['ingredients'].append(tmp_dict)
-    else:
-        msg = (
-            f'Gathering attempt unsuccessful. '
-            f'Player rolled {gathering_roll}, '
-            f'DC is {TravelMethods.dc(travel_method)}.'
-        )
-        data_dict['msg'] = msg
+
+    data_dict['result_msg'] = (
+        f'Player rolled {gathering_roll}, '
+        f'DC for {travel_method} pace is {TravelMethods.dc(travel_method)}.'
+    )
 
 
-def identifying(identify_roll, data_dict, args):
+def identifying(data_dict, args):
+    identify_roll = args.get('identify_roll', 0)
+    if not identify_roll:
+        identify_roll = 0
     identify_ingredient = args.get('identify_ingredient')
+
+    data_dict['prev_identify_roll'] = identify_roll
+    for o in data_dict['ingredient_options']:
+        if o['value'] == identify_ingredient:
+            o['selected'] = 'selected'
+            break
+
+    app.logger.info(f'(Identifying) { { k: v for k, v in args.items() } }')
 
     ingredients = Ingredients.retrieve(identify_ingredient, key=lambda i: i.name())
 
@@ -79,13 +103,11 @@ def identifying(identify_roll, data_dict, args):
     if identify_successful:
         data_dict['identify_roll'] = identify_roll
         data_dict['ingredient'] = ingredient.to_dict()
-    else:
-        msg = (
-            f'Identify attempt unsuccessful. '
-            f'Player rolled {identify_roll}, '
-            f'DC for {ingredient.name()} is {identify_dc}.'
-        )
-        data_dict['msg'] = msg
+
+    data_dict['result_msg'] = (
+        f'Player rolled {identify_roll}, '
+        f'DC for {ingredient.name()} is {identify_dc}.'
+    )
 
 
 @app.route('/')
@@ -103,28 +125,19 @@ def dnd_herbalism():
     data_dict = {
         'terrain_options': terrain_options,
         'travel_options': travel_options,
-        'ingredient_options': ingredient_options,
-        'msg': None
+        'ingredient_options': ingredient_options
     }
 
     if HttpMethods.is_post(request.method):
         args = request.form
 
-        app.logger.info(args)
-
         if 'gathering_roll' in args:
-            app.logger.info('Gathering')
-            roll = args.get('gathering_roll', 0)
-            if not roll:
-                roll = 0
-            gathering(roll, data_dict, args)
+            gathering(data_dict, args)
 
         if 'identify_roll' in args:
-            app.logger.info('Identifying')
-            roll = args.get('identify_roll', 0)
-            if not roll:
-                roll = 0
-            identifying(roll, data_dict, args)
+            identifying(data_dict, args)
+
+    # app.logger.info(data_dict)
 
     return render_template('dnd/herbalism.html',
                            title='D&D | Herbalism',
@@ -132,10 +145,10 @@ def dnd_herbalism():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000, debug=True)  # Run locally in debug
-    """import sys
+    # app.run(host='0.0.0.0', port=8000, debug=True)  # Run locally in debug
+    import sys
     print((
         'This module is not meant to be run directly. '
-        'Run the ’server’ module instead using ’python server.py’'
+        'Run the ´server´ module instead using ´python server.py´'
     ))
-    sys.exit(1)"""
+    sys.exit(1)

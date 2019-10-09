@@ -1,28 +1,28 @@
 {% extends "base.html" %} {% block content %}
-<div class="container my-5">
+<div class="container my-4">
   <div class="row">
-    <div class="col-sm bottom-spacer">
+    <div class="col-sm bottom-spacer-sm">
       <h2>Gathering</h2>
       <hr>
       <div class="w-100 pl-2 pr-4">
-        <form method=post>
+        <form method="post" id="gathering_form">
           <!-- Player Roll input -->
           <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
-              <span class="input-group-text label" id="gathering_roll">Player Roll</span>
+              <span class="input-group-text label" id="gathering_roll_lbl">Player Roll</span>
             </div>
-            <input type="number" class="form-control" placeholder="0" name="gathering_roll" aria-label="gathering_roll" aria-describedby="gathering_roll">
+            <input type="number" id="gathering_roll" class="form-control" {% if prev_gather_roll %} value="{{ prev_gather_roll }}" {% endif %} placeholder="0" name="gathering_roll" aria-describedby="gathering_roll_lbl">
           </div>
 
           <!-- Travel Method input -->
           <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
-              <span class="input-group-text label" id="travel_method">Travel Method</span>
+              <span class="input-group-text label" id="travel_method_lbl">Travel Method</span>
             </div>
-            <select name="travel_method" class="custom-select" aria-describedby="travel_method">
+            <select name="travel_method" id="travel_method" class="custom-select" aria-describedby="travel_method_lbl">
               {% if travel_options %}
               {% for option in travel_options %}
-              <option value="{{ option.value }}">{{ option.name }}</option>
+              <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
               {% endfor %}
               {% else %}
               <option value="unknown">???</option>
@@ -33,12 +33,12 @@
           <!-- Terrain input -->
           <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
-              <span class="input-group-text label" id="terrain_type">Terrain</span>
+              <span class="input-group-text label" id="terrain_type_lbl">Terrain</span>
             </div>
-            <select name="terrain_type" class="custom-select" aria-describedby="terrain_type">
+            <select name="terrain_type" id="terrain_type" class="custom-select" aria-describedby="terrain_type_lbl">
               {% if terrain_options %}
               {% for option in terrain_options %}
-              <option value="{{ option.value }}">{{ option.name }}</option>
+              <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
               {% endfor %}
               {% else %}
               <option value="unknown">???</option>
@@ -53,52 +53,50 @@
         <!--<hr class="d-none d-md-block">-->
         <div class="mt-4">
           <h4 class="text-{{ gathering_result_class }}">Result</h4>
-            {% if gathering_successful %}
-              <p>Player rolled {{ gathering_roll }}</p>
-              {% for ingredient in ingredients %}
-                <p>
-                  {% if ingredient.msg %}
-                  <span class="text-warning">{{ ingredient.msg }}</span>
-                  {% endif %}
-                  <span>Succesfully gathered {{ ingredient.amount }} {{ ingredient.ingredient.name }}</span>
-                </p>
-                {% if ingredient.remarks %}
-                <p>{{ ingredient.remarks }}</p>
+          <p>{{ result_msg }}</p>
+          {% if gathering_successful %}
+            {% for ingredient in ingredients %}
+              <p>
+                {% if ingredient.msg %}
+                <span class="text-warning">{{ ingredient.msg }} </span>
                 {% endif %}
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.ingredient.description }}</i></p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.ingredient.details }}</i></p>
-              {% endfor %}
-            {% else %}
-            <p>{{ msg }}</p>
-            {% endif %}
+                <span>Succesfully gathered {{ ingredient.amount }} {{ ingredient.ingredient.name }}.</span>
+              </p>
+              {% if ingredient.remarks %}
+              <p>{{ ingredient.remarks }}</p>
+              {% endif %}
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.ingredient.description }}</i></p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.ingredient.details }}</i></p>
+            {% endfor %}
+          {% endif %}
         </div>
         {% endif %}
       </div>
     </div> <!-- column -->
 
-    <div class="col-sm bottom-spacer">
+    <div class="col-sm bottom-spacer-sm">
       <h2>Identifying</h2>
       <hr>
       <div class="w-100 pl-2 pr-4">
-        <form method=post>
+        <form method="post" id="identifying_form">
           <!-- Player Roll input -->
           <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
-              <span class="input-group-text label" id="identify_roll">Player Roll</span>
+              <span class="input-group-text label" id="identify_roll_lbl">Player Roll</span>
             </div>
-            <input type="number" class="form-control" placeholder="0" name="identify_roll" aria-label="identify_roll" aria-describedby="identify_roll">
+            <input type="number" id="identify_roll" class="form-control" {% if prev_identify_roll %} value="{{ prev_identify_roll }}" {% endif %} placeholder="0" name="identify_roll" aria-describedby="identify_roll_lbl">
           </div>
 
           <!-- Travel Method input -->
           <div class="input-group mb-3 w-100">
             <div class="input-group-prepend">
-              <span class="input-group-text label" id="identify_ingredient">Ingredient</span>
+              <span class="input-group-text label" id="identify_ingredient_lbl">Ingredient</span>
             </div>
-            <select name="identify_ingredient" class="custom-select" aria-describedby="identify_ingredient">
+            <select name="identify_ingredient" id="identify_ingredient" class="custom-select" aria-describedby="identify_ingredient_lbl">
               {% if ingredient_options %}
-              {% for option in ingredient_options %}
-              <option value="{{ option.value }}">{{ option.name }}</option>
-              {% endfor %}
+                {% for option in ingredient_options %}
+                <option value="{{ option.value }}">{{ option.name }}</option>
+                {% endfor %}
               {% else %}
               <option value="unknown">???</option>
               {% endif %}
@@ -112,16 +110,14 @@
         <!--<hr class="d-none d-md-block">-->
         <div class="mt-4">
           <h4 class="text-{{ identify_result_class }}">Result</h4>
-            {% if identify_successful %}
-              <p>Player rolled {{ identify_roll }}</p>
-              <h5>{{ ingredient.name }}</h5>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.description }}</i></p>
-              {% if show_details %}
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details }}</i></p>
-              {% endif %}
-            {% else %}
-            <p>{{ msg }}</p>
+          <p>{{ result_msg }}</p>
+          {% if identify_successful %}
+          <h5>{{ ingredient.name }}</h5>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.description }}</i></p>
+            {% if show_details %}
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details }}</i></p>
             {% endif %}
+          {% endif %}
         </div>
         {% endif %}
       </div>

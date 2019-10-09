@@ -6,6 +6,11 @@
   margin-bottom: 4em;
 }
 
+@media screen and (min-width: 576px)
+.bottom-spacer-sm {
+  margin-bottom: 4em;
+}
+
 .w-90 {
   width: 90%;
 }

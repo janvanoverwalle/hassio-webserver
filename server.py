@@ -20,13 +20,16 @@ def main(argv):
     host = '0.0.0.0'
 
     try:
-        opts, args = getopt(argv, 'hp:', ['help', 'port='])
+        opts, args = getopt(argv, 'hdp:', ['help', 'debug', 'port='])
     except GetoptError:
         print_help(2)
 
+    debug = False
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             print_help(0)
+        elif opt in ('-d', '--debug'):
+            debug = True
         elif opt in ('-p', '--port'):
             try:
                 port = int(arg)
@@ -34,8 +37,11 @@ def main(argv):
                 print(f'Error: "{arg}" is not a valid port number')
                 sys.exit(2)
 
-    print(f'Serving on port {port}')
-    serve(app, host=host, port=port)
+    # print(f'Serving on port {port}')
+    if debug:
+        app.run(host=host, port=port, debug=True)
+    else:
+        serve(app, host=host, port=port)
 
 
 if __name__ == '__main__':

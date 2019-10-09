@@ -38,7 +38,7 @@ class Ingredient(object):
         if new_type is not None:
             cls._type = new_type
         if not isinstance(cls._type, list):
-            cls._type = list(cls._type)
+            cls._type = [cls._type]
         return cls._type
 
     @classmethod
@@ -76,7 +76,7 @@ class Ingredient(object):
         if new_terrain is not None:
             cls._terrain = new_terrain
         if not isinstance(cls._terrain, list):
-            cls._terrain = list(cls._terrain)
+            cls._terrain = [cls._terrain]
         return cls._terrain
 
     @classmethod
@@ -1207,7 +1207,7 @@ class Ingredients(object):
 
         if exclude:
             if not isinstance(exclude, (list, tuple)):
-                exclude = list(exclude)
+                exclude = [exclude]
             for e in exclude:
                 if e not in res_list:
                     continue
