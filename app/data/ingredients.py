@@ -21,6 +21,13 @@ class Ingredient(object):
     _property = None
     _description = None
 
+    _price_table = {
+        IngredientRarity.COMMON: (0, 15),
+        IngredientRarity.UNCOMMON: (15, 40),
+        IngredientRarity.RARE: (40, 100),
+        IngredientRarity.VERY_RARE: (100, 250)
+    }
+
     @classmethod
     def name(cls, new_name=None):
         if new_name is not None:
@@ -46,6 +53,10 @@ class Ingredient(object):
         if new_rarity is not None:
             cls._rarity = new_rarity
         return cls._rarity
+
+    @classmethod
+    def price_range(cls):
+        return cls._price_table.get(cls.rarity(), 0)
 
     @classmethod
     def special(cls, new_special=None):
@@ -98,6 +109,7 @@ class Ingredient(object):
             'id': cls.id(),
             'type': cls.type(),
             'rarity': cls.rarity(),
+            'price_range': cls.price_range(),
             'special': cls.special(),
             'function': cls.function(),
             'details': cls.details(),
