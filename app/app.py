@@ -140,6 +140,7 @@ def dnd_herbalism():
     # app.logger.info(data_dict)
 
     return render_template('dnd/herbalism.html',
+                           favicon_path='img/dnd/herbalism.ico',
                            title='D&D | Herbalism',
                            **data_dict)
 
