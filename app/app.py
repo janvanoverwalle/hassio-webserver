@@ -112,7 +112,9 @@ def identifying(data_dict, args):
 
 @app.route('/')
 def index():
-    return render_template('index.html', title='Home')
+    return render_template('index.html',
+                           favicon='favicon',
+                           title='Hass.io Web | Home')
 
 
 @app.route('/dnd/herbalism', methods=[HttpMethods.GET, HttpMethods.POST])
@@ -140,8 +142,8 @@ def dnd_herbalism():
     # app.logger.info(data_dict)
 
     return render_template('dnd/herbalism.html',
-                           favicon_path='img/dnd/herbalism.ico',
-                           title='D&D | Herbalism',
+                           favicon='dnd/herbalism',
+                           title='Hass.io Web | D&D | Herbalism',
                            **data_dict)
 
 
