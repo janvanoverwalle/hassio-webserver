@@ -2,13 +2,14 @@
   width: 8em;
 }
 
-.bottom-spacer {
+.bottom-spacer, .bottom-spacer-sm {
   margin-bottom: 4em;
 }
 
-@media screen and (min-width: 576px)
-.bottom-spacer-sm {
-  margin-bottom: 4em;
+@media (min-width: 576px) {
+  .bottom-spacer-sm {
+    margin-bottom: 0em;
+  }
 }
 
 .w-90 {
