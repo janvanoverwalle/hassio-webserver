@@ -294,10 +294,10 @@ class WildSageroot(Ingredient):
     _type = IngredientType.POTION
     _rarity = IngredientRarity.COMMON
     _function = IngredientFunction.EFFECT
-    _details = 'Heals for 2d4 + Alchemy Modifier.'
-    _dc = 0
+    _details = 'Heals for 1d4 + Alchemy Modifier.'
+    _dc = 1
     _terrain = TerrainTypes.MOST
-    _property = {'effect_dice': '2d4+mod'}
+    _property = {'effect_dice': '1d4+mod'}
     _description = (
         'The most common ingredient found among doctor\'s and healer\'s equipment would be these '
         'light pink roots. They measure about 3 to 5 inches in length and have a smooth, fuzzy '
@@ -480,8 +480,9 @@ class HarradaLeaf(Ingredient):
     _rarity = IngredientRarity.COMMON
     _function = IngredientFunction.MODIFIER
     _details = (
-        'While [poisoned] target has disadvantage on ability checks. '
-        'Cannot be altered by other ingredients.'
+        'While [poisoned], target has advantage on a single type of ability '
+        'check followed by disadvantage on that same type of ability check '
+        'for 1d4 hours. Cannot be altered by other ingredients.'
     )
     _dc = 1
     _terrain = TerrainTypes.FOREST
@@ -574,10 +575,10 @@ class WyrmtonguePetals(Ingredient):
     _rarity = IngredientRarity.COMMON
     _function = IngredientFunction.EFFECT
     _details = (
-        '1d4 + Alchemy Modifier poison damage per round; target is [poisoned] for '
+        '1d4 + Alchemy Modifier poison damage and target is [poisoned] for '
         '1 minute on a failed CON save.'
     )
-    _dc = 0
+    _dc = 1
     _terrain = TerrainTypes.MOST
     _property = {
         'effect_dice': '1d4+mod',
