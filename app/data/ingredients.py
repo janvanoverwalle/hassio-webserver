@@ -21,6 +21,13 @@ class Ingredient(object):
     _property = None
     _description = None
 
+    _identify_modifier = {
+        IngredientRarity.COMMON: 0,
+        IngredientRarity.UNCOMMON: 0,
+        IngredientRarity.RARE: 1,
+        IngredientRarity.VERY_RARE: 2
+    }
+
     _price_table = {
         IngredientRarity.COMMON: (0, 15),
         IngredientRarity.UNCOMMON: (15, 40),
@@ -81,6 +88,10 @@ class Ingredient(object):
         if new_dc is not None:
             cls._dc = new_dc
         return cls._dc
+
+    @classmethod
+    def identify_dc(cls):
+        return cls.dc() + cls._identify_modifier.get(cls.rarity(), 0)
 
     @classmethod
     def terrain(cls, new_terrain=None):
@@ -376,8 +387,8 @@ class AmanitaCap(Ingredient):
     )
 
 
-class BasiliskBreath(Ingredient):
-    """ Basilisk Breath ingredient """
+class BasilisksBreath(Ingredient):
+    """ Basilisks Breath ingredient """
 
     _name = 'Basilisk\'s Breath'
     _id = 0x0A
@@ -1131,7 +1142,7 @@ class Ingredients(object):
     AMANITA_CAP = AmanitaCap
     ARCTIC_CREEPER = ArcticCreeper
     ARROW_ROOT = ArrowRoot
-    BASILISK_BREATH = BasiliskBreath
+    BASILISKS_BREATH = BasilisksBreath
     BLOODGRASS = Bloodgrass
     BLUE_TOADSHADE = BlueToadshade
     CACTUS_JUICE = CactusJuice
@@ -1177,7 +1188,7 @@ class Ingredients(object):
             cls.AMANITA_CAP,
             cls.ARCTIC_CREEPER,
             cls.ARROW_ROOT,
-            cls.BASILISK_BREATH,
+            cls.BASILISKS_BREATH,
             cls.BLOODGRASS,
             cls.BLUE_TOADSHADE,
             cls.CACTUS_JUICE,

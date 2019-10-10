@@ -86,7 +86,7 @@ def identifying(data_dict, args):
 
     ingredient = ingredients[0]
 
-    identify_dc = 8 + ingredient.dc()
+    identify_dc = 8 + ingredient.identify_dc()
 
     identify_successful = identify_dc <= int(identify_roll)
     data_dict['identify_successful'] = identify_successful
@@ -142,7 +142,7 @@ def dnd_herbalism():
     # app.logger.info(data_dict)
 
     return render_template('dnd/herbalism.html',
-                           favicon='dnd/herbalism',
+                           favicon='dnd/herbalism_b',
                            title='Hass.io Web | D&D | Herbalism',
                            **data_dict)
 

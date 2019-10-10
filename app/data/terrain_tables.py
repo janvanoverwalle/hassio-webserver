@@ -174,7 +174,7 @@ class HillTable(TerrainTable):
 class MountainTable(TerrainTable):
     _type = TerrainTypes.MOUNTAIN
     _data = {
-        2: TerrainIngredient(Ingredients.BASILISK_BREATH),
+        2: TerrainIngredient(Ingredients.BASILISKS_BREATH),
         3: TerrainIngredient(Ingredients.FROZEN_SEEDLINGS, multiplier=2),
         4: TerrainIngredient(Ingredients.ARCTIC_CREEPER, multiplier=2),
         5: TerrainIngredient(Ingredients.DRIED_EPHEDRA),
