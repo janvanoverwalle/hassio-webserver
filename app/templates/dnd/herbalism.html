@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "content.html" %} {% block content %}
 <div class="container my-4">
   <div class="row">
     <div class="col-sm bottom-spacer-sm">
@@ -7,50 +7,24 @@
       <div class="w-100 pl-2 pr-4">
         <form method="post" id="gathering_form">
           <!-- Player Roll input -->
-          <div class="input-group mb-3 w-100">
-            <div class="input-group-prepend">
-              <span class="input-group-text label" id="gathering_roll_lbl">Player Roll</span>
-            </div>
-            <input type="number" id="gathering_roll" class="form-control" {% if prev_gather_roll %} value="{{ prev_gather_roll }}" {% endif %} placeholder="0" name="gathering_roll" aria-describedby="gathering_roll_lbl">
-          </div>
+          {% with name='gathering_roll', label='Player Roll', type='number', default_value=prev_gather_roll, placeholder='0' %}
+            {% include "components/input.html" %}
+          {% endwith %}
 
           <!-- Travel Method input -->
-          <div class="input-group mb-3 w-100">
-            <div class="input-group-prepend">
-              <span class="input-group-text label" id="travel_method_lbl">Travel Method</span>
-            </div>
-            <select name="travel_method" id="travel_method" class="custom-select" aria-describedby="travel_method_lbl">
-              {% if travel_options %}
-              {% for option in travel_options %}
-              <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
-              {% endfor %}
-              {% else %}
-              <option value="unknown">???</option>
-              {% endif %}
-            </select>
-          </div>
+          {% with name='travel_method', label='Travel Method', options=travel_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
 
           <!-- Terrain input -->
-          <div class="input-group mb-3 w-100">
-            <div class="input-group-prepend">
-              <span class="input-group-text label" id="terrain_type_lbl">Terrain</span>
-            </div>
-            <select name="terrain_type" id="terrain_type" class="custom-select" aria-describedby="terrain_type_lbl">
-              {% if terrain_options %}
-              {% for option in terrain_options %}
-              <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
-              {% endfor %}
-              {% else %}
-              <option value="unknown">???</option>
-              {% endif %}
-            </select>
-          </div>
+          {% with name='terrain_type', label='Terrain', options=terrain_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
 
           <input type="submit" class="btn btn-primary" value="Gather">
         </form>
 
         {% if gathering_result_class %}
-        <!--<hr class="d-none d-md-block">-->
         <div class="mt-4">
           <h4 class="text-{{ gathering_result_class }}">Result</h4>
           <p>{{ result_msg }}</p>
@@ -80,7 +54,7 @@
         </div>
         {% endif %}
       </div>
-    </div> <!-- column -->
+    </div> <!-- /column -->
 
     <div class="col-sm">
       <h2>Identifying</h2>
@@ -88,34 +62,19 @@
       <div class="w-100 pl-2 pr-4">
         <form method="post" id="identifying_form">
           <!-- Player Roll input -->
-          <div class="input-group mb-3 w-100">
-            <div class="input-group-prepend">
-              <span class="input-group-text label" id="identify_roll_lbl">Player Roll</span>
-            </div>
-            <input type="number" id="identify_roll" class="form-control" {% if prev_identify_roll %} value="{{ prev_identify_roll }}" {% endif %} placeholder="0" name="identify_roll" aria-describedby="identify_roll_lbl">
-          </div>
+          {% with name='identify_roll', label='Player Roll', type='number', default_value=prev_identify_roll, placeholder='0' %}
+            {% include "components/input.html" %}
+          {% endwith %}
 
-          <!-- Travel Method input -->
-          <div class="input-group mb-3 w-100">
-            <div class="input-group-prepend">
-              <span class="input-group-text label" id="identify_ingredient_lbl">Ingredient</span>
-            </div>
-            <select name="identify_ingredient" id="identify_ingredient" class="custom-select" aria-describedby="identify_ingredient_lbl">
-              {% if ingredient_options %}
-                {% for option in ingredient_options %}
-                <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
-                {% endfor %}
-              {% else %}
-              <option value="unknown">???</option>
-              {% endif %}
-            </select>
-          </div>
+          <!-- Ingredient input -->
+          {% with name='identify_ingredient', label='Ingredient', options=ingredient_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
 
           <input type="submit" class="btn btn-primary" value="Identify">
         </form>
 
         {% if identify_result_class %}
-        <!--<hr class="d-none d-md-block">-->
         <div class="mt-4">
           <h4 class="text-{{ identify_result_class }}">Result</h4>
           <p>{{ result_msg }}</p>
@@ -138,7 +97,7 @@
         {% endif %}
       </div>
       </div>
-    </div> <!-- column -->
-  </div> <!-- row -->
+    </div> <!-- /column -->
+  </div> <!-- /row -->
 </div> <!-- /container -->
 {% endblock %}

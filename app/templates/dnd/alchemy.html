@@ -1,0 +1,42 @@
+{% extends "content.html" %} {% block content %}
+<div class="container my-4">
+  <div class="row">
+    <div class="col-sm bottom-spacer-sm">
+      <h2>Crafting</h2>
+      <hr>
+      <div class="w-100 pl-2 pr-4">
+        <form method="post" id="crafting_form">
+          <!-- Base Ingredient input -->
+          {% with name='base_ingredient', label='Base Ingredient', options=base_ingredient_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
+
+          <!-- Ingredient input -->
+          {% with name='ingredient_1', label='Ingredient 1', options=ingredient_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
+
+          <!-- Ingredient input -->
+          {% with name='ingredient_2', label='Ingredient 2', options=ingredient_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
+
+          <!-- Ingredient input -->
+          {% with name='ingredient_3', label='Ingredient 3', options=ingredient_options %}
+            {% include "components/dropdown.html" %}
+          {% endwith %}
+
+          <input type="submit" class="btn btn-primary" value="Craft">
+        </form>
+
+        {% if carfting_result_class %}
+        <div class="mt-4">
+          <h4 class="text-{{ carfting_result_class }}">Result</h4>
+          <p>{{ result_msg }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div> <!-- /column -->
+  </div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock %}

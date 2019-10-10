@@ -13,8 +13,28 @@ body {
     color: var(--font-color);
 }
 
-.label {
+.label, .label-8 {
   width: 8em;
+}
+
+.label-2 {
+  width: 2em;
+}
+
+.label-4 {
+  width: 4em;
+}
+
+.label-6 {
+  width: 6em;
+}
+
+.label-10 {
+  width: 10em;
+}
+
+.label-12 {
+  width: 12em;
 }
 
 .bottom-spacer, .bottom-spacer-sm {

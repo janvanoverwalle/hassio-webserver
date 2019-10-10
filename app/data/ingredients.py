@@ -66,7 +66,7 @@ class Ingredient(object):
         return cls._price_table.get(cls.rarity(), 0)
 
     @classmethod
-    def special(cls, new_special=None):
+    def is_special(cls, new_special=None):
         if new_special is not None:
             cls._special = new_special
         return cls._special
@@ -76,6 +76,10 @@ class Ingredient(object):
         if new_function is not None:
             cls._function = new_function
         return cls._function
+
+    @classmethod
+    def is_effect(cls):
+        return cls.function() == IngredientFunction.EFFECT
 
     @classmethod
     def details(cls, new_details=None):
@@ -121,7 +125,7 @@ class Ingredient(object):
             'type': cls.type(),
             'rarity': cls.rarity(),
             'price_range': cls.price_range(),
-            'special': cls.special(),
+            'special': cls.is_special(),
             'function': cls.function(),
             'details': cls.details(),
             'dc': cls.dc(),

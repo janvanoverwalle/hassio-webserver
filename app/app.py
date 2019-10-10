@@ -79,12 +79,7 @@ def identifying(data_dict, args):
 
     app.logger.info(f'(Identifying) { { k: v for k, v in args.items() } }')
 
-    ingredients = Ingredients.retrieve(identify_ingredient, key=lambda i: i.name())
-
-    if len(ingredients) != 1:
-        raise ValueError(f'Invalid ingredient to identify: {identify_ingredient}')
-
-    ingredient = ingredients[0]
+    ingredient = Ingredients.retrieve(identify_ingredient, key=lambda i: i.name())[0]
 
     identify_dc = 8 + ingredient.identify_dc()
 
@@ -112,9 +107,59 @@ def identifying(data_dict, args):
 
 @app.route('/')
 def index():
+    pages = [{
+        'header': 'D&D',
+        'sections': [{
+            'href': 'dnd_alchemy',
+            'text': 'Alchemy'
+        }, {
+            'href': 'dnd_herbalism',
+            'text': 'Herbalism'
+        }]
+    }]
     return render_template('index.html',
                            favicon='favicon',
-                           title='Hass.io Web | Home')
+                           title='Hass.io Web | Home',
+                           pages=pages)
+
+
+@app.route('/dnd/alchemy', methods=[HttpMethods.GET, HttpMethods.POST])
+def dnd_alchemy():
+    # TODO: Change so that it passes along a single list with all ingredients (and their properties)
+    #       The template will figure everything out itself (makes it so JS can interact as well)
+
+    base_ingredient_options = create_select_data([i.name() for i in Ingredients.to_list() if i.is_effect()])
+    ingredient_options = create_select_data([i.name() for i in Ingredients.to_list() if not i.is_effect() or i.is_special()])
+
+    data_dict = {
+        'base_ingredient_options': base_ingredient_options,
+        'ingredient_options': ingredient_options
+    }
+
+    if HttpMethods.is_post(request.method):
+        args = request.form
+
+        base_ingredient = args.get('base_ingredient')
+        modifier_ingredients = [args.get(f'ingredient_{i+1}') for i in range(3)]
+
+        base_ingredient = Ingredients.retrieve(base_ingredient, key=lambda i: i.name())[0]
+        ingredients = []
+        for ingredient in modifier_ingredients:
+            if not ingredient:
+                continue
+            ingredients.append(Ingredients.retrieve(ingredient, key=lambda i: i.name())[0])
+
+        attempt_dc = 10 + base_ingredient.dc() + sum([i.dc() for i in ingredients])
+
+        # TODO: Continue implementation
+
+        data_dict['carfting_result_class'] = BootstrapContextualClasses.SUCCESS
+        data_dict['result_msg'] = f'DC to craft this concoction is {attempt_dc}.'
+
+    return render_template('dnd/alchemy.html',
+                           favicon='dnd/alchemy_b',
+                           title='Hass.io Web | D&D | Alchemy',
+                           **data_dict)
 
 
 @app.route('/dnd/herbalism', methods=[HttpMethods.GET, HttpMethods.POST])
