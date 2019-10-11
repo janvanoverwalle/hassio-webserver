@@ -11,7 +11,48 @@ from .utilities.dice import Dice
 app = Flask(__name__)
 
 
+def crafting(data_dict, args):
+    app.logger.info(f'(Crafting) { { k: v for k, v in args.items() } }')
+
+    base_ingredient = args.get('base_ingredient')
+    modifier_ingredients = [args.get(f'ingredient_{i+1}') for i in range(3)]
+
+    for o in data_dict['base_ingredient_options']:
+        if o['value'] == base_ingredient:
+            o['selected'] = 'selected'
+            break
+    for o in data_dict['ingredient_options']:
+        for i in range(len(modifier_ingredients)):
+            if o['value'] == modifier_ingredients[i]:
+                o[f'selected{i}'] = 'selected'
+                break
+
+    base_ingredient = Ingredients.retrieve(base_ingredient, key=lambda i: i.id())[0]
+    ingredients = []
+    for ingredient in modifier_ingredients:
+        if not ingredient:
+            continue
+        ingredients.append(Ingredients.retrieve(ingredient, key=lambda i: i.id())[0])
+
+    valid_types = len([i for i in ingredients if set(base_ingredient.type()).intersection(i.type())])
+    is_valid_recipe = valid_types <= (1 if base_ingredient.is_enchantment() else 3)
+
+    if is_valid_recipe:
+        identify_result_class = BootstrapContextualClasses.SUCCESS
+    else:
+        identify_result_class = BootstrapContextualClasses.ERROR
+    data_dict['crafting_result_class'] = identify_result_class
+
+    attempt_dc = 10 + base_ingredient.dc() + sum([i.dc() for i in ingredients])
+
+    # TODO: Continue implementation
+
+    data_dict['result_msg'] = f'DC to craft this concoction is {attempt_dc}.'
+
+
 def gathering(data_dict, args):
+    app.logger.info(f'(Gathering) { { k: v for k, v in args.items() } }')
+
     gathering_roll = args.get('gathering_roll', 0)
     if not gathering_roll:
         gathering_roll = 0
@@ -27,8 +68,6 @@ def gathering(data_dict, args):
         if o['value'] == travel_method:
             o['selected'] = 'selected'
             break
-
-    app.logger.info(f'(Gathering) { { k: v for k, v in args.items() } }')
 
     gathering_successful = TravelMethods.is_gathering_successful(travel_method, gathering_roll)
     data_dict['gathering_successful'] = gathering_successful
@@ -66,6 +105,8 @@ def gathering(data_dict, args):
 
 
 def identifying(data_dict, args):
+    app.logger.info(f'(Identifying) { { k: v for k, v in args.items() } }')
+
     identify_roll = args.get('identify_roll', 0)
     if not identify_roll:
         identify_roll = 0
@@ -77,9 +118,7 @@ def identifying(data_dict, args):
             o['selected'] = 'selected'
             break
 
-    app.logger.info(f'(Identifying) { { k: v for k, v in args.items() } }')
-
-    ingredient = Ingredients.retrieve(identify_ingredient, key=lambda i: i.name())[0]
+    ingredient = Ingredients.retrieve(identify_ingredient, key=lambda i: i.id())[0]
 
     identify_dc = 8 + ingredient.identify_dc()
 
@@ -125,36 +164,20 @@ def index():
 
 @app.route('/dnd/alchemy', methods=[HttpMethods.GET, HttpMethods.POST])
 def dnd_alchemy():
-    # TODO: Change so that it passes along a single list with all ingredients (and their properties)
-    #       The template will figure everything out itself (makes it so JS can interact as well)
-
-    base_ingredient_options = create_select_data([i.name() for i in Ingredients.to_list() if i.is_effect()])
-    ingredient_options = create_select_data([i.name() for i in Ingredients.to_list() if not i.is_effect() or i.is_special()])
+    ingredient_list = Ingredients.to_list()
+    base_ingredient_options = create_select_data([i for i in ingredient_list if i.is_effect()])
+    ingredient_options = create_select_data([i for i in ingredient_list if not i.is_effect() or i.is_special()])
 
     data_dict = {
         'base_ingredient_options': base_ingredient_options,
-        'ingredient_options': ingredient_options
+        'ingredient_options': ingredient_options,
+        # 'ingredients': [i.to_dict() for i in ingredient_list]
     }
 
     if HttpMethods.is_post(request.method):
         args = request.form
 
-        base_ingredient = args.get('base_ingredient')
-        modifier_ingredients = [args.get(f'ingredient_{i+1}') for i in range(3)]
-
-        base_ingredient = Ingredients.retrieve(base_ingredient, key=lambda i: i.name())[0]
-        ingredients = []
-        for ingredient in modifier_ingredients:
-            if not ingredient:
-                continue
-            ingredients.append(Ingredients.retrieve(ingredient, key=lambda i: i.name())[0])
-
-        attempt_dc = 10 + base_ingredient.dc() + sum([i.dc() for i in ingredients])
-
-        # TODO: Continue implementation
-
-        data_dict['carfting_result_class'] = BootstrapContextualClasses.SUCCESS
-        data_dict['result_msg'] = f'DC to craft this concoction is {attempt_dc}.'
+        crafting(data_dict, args)
 
     return render_template('dnd/alchemy.html',
                            favicon='dnd/alchemy_b',
@@ -167,7 +190,7 @@ def dnd_herbalism():
     terrain_excludes = [TerrainTypes.MOST, TerrainTypes.SPECIAL]
     terrain_options = create_select_data(TerrainTypes.to_list(exclude=terrain_excludes))
     travel_options = create_select_data(TravelMethods.to_list())
-    ingredient_options = create_select_data([i.name() for i in Ingredients.to_list()])
+    ingredient_options = create_select_data(Ingredients.to_list())
 
     data_dict = {
         'terrain_options': terrain_options,

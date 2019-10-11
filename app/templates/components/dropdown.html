@@ -1,10 +1,11 @@
-<div class="input-group mb-3 w-100">
+<div class="input-group mb-3 w-100" id="{{ name }}_root">
   <div class="input-group-prepend">
     <span class="input-group-text label-8" id="{{ name }}_lbl">{{ label }}</span>
   </div>
-  <select name="{{ name }}" id="{{ name }}" class="custom-select" aria-describedby="{{ name }}_lbl">
+  <select name="{{ name }}" id="{{ name }}" {% if onchange %} onchange="{{ onchange }}" {% endif %} class="custom-select" aria-describedby="{{ name }}_lbl">
     {% if options %}
       {% for option in options %}
+      <!-- TODO: Make option.selected variable for different options -->
       <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
       {% endfor %}
     {% else %}

@@ -56,6 +56,10 @@ class Ingredient(object):
         return cls._type
 
     @classmethod
+    def is_enchantment(cls):
+        return IngredientType.ENCHANTMENT in cls.type()
+
+    @classmethod
     def rarity(cls, new_rarity=None):
         if new_rarity is not None:
             cls._rarity = new_rarity
@@ -69,7 +73,7 @@ class Ingredient(object):
     def is_special(cls, new_special=None):
         if new_special is not None:
             cls._special = new_special
-        return cls._special
+        return cls._special or False
 
     @classmethod
     def function(cls, new_function=None):
@@ -810,6 +814,7 @@ class ElementalWater(Ingredient):
     _type = IngredientType.ENCHANTMENT
     _rarity = IngredientRarity.RARE
     _special = True
+    _function = IngredientFunction.EFFECT
     _details = 'This is required as the base catalyst for all Enchantment ingredients.'
     _dc = 3
     _terrain = TerrainTypes.SPECIAL
@@ -1252,9 +1257,8 @@ class Ingredients(object):
         allowed_chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
         for i in cls.to_list():
             k = key(i)
-            if isinstance(k, str):
-                s1 = ''.join([c for c in k.lower() if c in allowed_chars])
-                s2 = ''.join([c for c in ingredient.lower() if c in allowed_chars])
-                if s1 == s2:
-                    ret.append(i)
+            s1 = ''.join([c for c in str(k).lower() if c in allowed_chars])
+            s2 = ''.join([c for c in str(ingredient).lower() if c in allowed_chars])
+            if s1 == s2:
+                ret.append(i)
         return ret
