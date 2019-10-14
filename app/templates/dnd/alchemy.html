@@ -7,7 +7,7 @@
       <div class="w-100 pl-2 pr-4">
         <form method="post" id="crafting_form">
           <!-- Base Ingredient input -->
-          {% with name='base_ingredient', label='Base Ingredient', options=base_ingredient_options %}
+          {% with name='base_ingredient', label='Base Ingredient', options=base_ingredient_options, onchange='on_base_ingredient_change(this)' %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 

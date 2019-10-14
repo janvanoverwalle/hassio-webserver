@@ -5,11 +5,23 @@
   <select name="{{ name }}" id="{{ name }}" {% if onchange %} onchange="{{ onchange }}" {% endif %} class="custom-select" aria-describedby="{{ name }}_lbl">
     {% if options %}
       {% for option in options %}
-      <!-- TODO: Make option.selected variable for different options -->
-      <option value="{{ option.value }}" {{ option.selected }}>{{ option.name }}</option>
+        {% set is_selected = '' %}
+        {% if option.selected is defined and option.selected %}
+          <!-- {{ option.selected|int }} -->
+          {% if option.selected|string|int != 0 %}
+            <!-- number -->
+            {% if option.selected == selected %}
+              {% set is_selected = 'selected' %}
+            {% endif %}
+          {% else %}
+            <!-- not number -->
+            {% set is_selected = 'selected' %}
+          {% endif %}
+        {% endif %}
+        <option value="{{ option.value }}" {{ is_selected }}>{{ option.name }}</option>
       {% endfor %}
     {% else %}
-    <option value="unknown">???</option>
+      <option value="-1">???</option>
     {% endif %}
   </select>
 </div>

@@ -26,85 +26,28 @@ function switch_theme(e) {
   }
 }
 
-/* Ingredient Change event */
+/* Base Ingredient Change event */
 const TYPE_POTION = 'Potion'
 const TYPE_POISON = 'Poison'
 const TYPE_ENCHANTMENT = 'Enchantment'
 
-var _ingredients = null
-var _previous_concoction_type = null
+var _previous_concoction_was_enchantment = null
 
-function _get_selected_ingredient(select) {
-  if (_ingredients == null) {
-    console.error('Ingredients list is empty')
-    return null
-  }
+function on_base_ingredient_change(sender) {
+  var text = sender.options[sender.selectedIndex].text
+  var types = text.split('-')[1].trim().replace(/[\(\)]/gi, '').split(',')
+  types.forEach(function(part, index) {
+    this[index] = this[index].trim()
+  }, types)
 
-  var selected_ingredient = null
-  for (var i = 0; i < _ingredients.length; i++) {
-    if (select.value == _ingredients[i].id) {
-      selected_ingredient = _ingredients[i]
-      break
-    }
-  }
-
-  return selected_ingredient
-}
-
-function on_ingredient_change(sender, ingredients) {
-  // Assumed that 'sender' is a 'select' element
-  if (_ingredients == null) {
-    _ingredients = ingredients
-  }
-
-  selected_ingredient = _get_selected_ingredient(sender)
-
-  if (selected_ingredient.function == 'Effect') {
-    _on_base_ingredient_change(selected_ingredient)
-  }
-  else {
-    _on_modifier_ingredient_change(selected_ingredient)
-  }
-}
-
-function _on_base_ingredient_change(selected_ingredient) {
-  console.log('Concoction type: ' + selected_ingredient.type)
-
-  if (selected_ingredient.type != _previous_concoction_type) {
-    var display_state = selected_ingredient.type.includes(TYPE_ENCHANTMENT) ? 'none' : 'flex'
-
+  var is_enchantment = types.includes(TYPE_ENCHANTMENT)
+  if (is_enchantment != _previous_concoction_was_enchantment) {
+    var display_state = is_enchantment ? 'none' : 'flex'
     _change_element_display('ingredient_2_root', display_state)
     _change_element_display('ingredient_3_root', display_state)
-
-    _update_modifier_ingredient_options(selected_ingredient)
   }
 
-  _previous_concoction_type = selected_ingredient.type
-}
-
-function _on_modifier_ingredient_change(selected_ingredient) {
-  console.log(selected_ingredient)
-}
-
-function _update_modifier_ingredient_options(selected_ingredient) {
-  var type = selected_ingredient.type
-
-  for (var i = 1; i < (type.includes(TYPE_ENCHANTMENT) ? 1 : 3)+1; i++) {
-    var select_name = 'ingredient_' + i
-    var options_str = '';
-    for (var j = 0; j < _ingredients.length; j++) {
-      if (_ingredients[j].function != null && _ingredients[j].function == 'Effect') {
-        if (!(selected_ingredient.id == 0 && _ingredients[j].type.includes(TYPE_POTION))) {
-          continue
-        }
-      }
-      if ((type.filter(value => _ingredients[j].type.includes(value))).length <= 0) {
-        continue
-      }
-      options_str += '<option value="' + _ingredients[j].id + '">' + _ingredients[j].name + '</option>';
-    }
-    $('select[name="' + select_name + '"]').find('option').remove().end().append($(options_str));
-  }
+  _previous_concoction_was_enchantment = is_enchantment
 }
 
 function _change_element_display(id, state) {

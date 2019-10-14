@@ -18,13 +18,13 @@ def crafting(data_dict, args):
     modifier_ingredients = [args.get(f'ingredient_{i+1}') for i in range(3)]
 
     for o in data_dict['base_ingredient_options']:
-        if o['value'] == base_ingredient:
-            o['selected'] = 'selected'
+        if o['value'] == int(base_ingredient):
+            o['selected'] = True
             break
     for o in data_dict['ingredient_options']:
         for i in range(len(modifier_ingredients)):
-            if o['value'] == modifier_ingredients[i]:
-                o[f'selected{i}'] = 'selected'
+            if o['value'] == int(modifier_ingredients[i]):
+                o['selected'] = i+1
                 break
 
     base_ingredient = Ingredients.retrieve(base_ingredient, key=lambda i: i.id())[0]
@@ -49,6 +49,8 @@ def crafting(data_dict, args):
 
     data_dict['result_msg'] = f'DC to craft this concoction is {attempt_dc}.'
 
+    app.logger.info(data_dict)
+
 
 def gathering(data_dict, args):
     app.logger.info(f'(Gathering) { { k: v for k, v in args.items() } }')
@@ -62,11 +64,11 @@ def gathering(data_dict, args):
     data_dict['prev_gather_roll'] = gathering_roll
     for o in data_dict['terrain_options']:
         if o['value'] == terrain_type:
-            o['selected'] = 'selected'
+            o['selected'] = True
             break
     for o in data_dict['travel_options']:
         if o['value'] == travel_method:
-            o['selected'] = 'selected'
+            o['selected'] = True
             break
 
     gathering_successful = TravelMethods.is_gathering_successful(travel_method, gathering_roll)
@@ -115,7 +117,7 @@ def identifying(data_dict, args):
     data_dict['prev_identify_roll'] = identify_roll
     for o in data_dict['ingredient_options']:
         if o['value'] == identify_ingredient:
-            o['selected'] = 'selected'
+            o['selected'] = True
             break
 
     ingredient = Ingredients.retrieve(identify_ingredient, key=lambda i: i.id())[0]
