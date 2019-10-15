@@ -27,7 +27,7 @@
         {% if gathering_result_class %}
         <div class="mt-4">
           <h4 class="text-{{ gathering_result_class }}">Result</h4>
-          <p>{{ result_msg }}</p>
+          <p>{{ result_msg|safe }}</p>
           {% if gathering_successful %}
             {% for ingredient in ingredients %}
               <p>
@@ -48,7 +48,7 @@
               <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Terrain: </b><i>
                 {{ ', '.join(ingredient.ingredient.terrain) }}
               </i></p>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.ingredient.details }}</i></p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.ingredient.details|safe }}</i></p>
             {% endfor %}
           {% endif %}
         </div>
@@ -77,7 +77,7 @@
         {% if identify_result_class %}
         <div class="mt-4">
           <h4 class="text-{{ identify_result_class }}">Result</h4>
-          <p>{{ result_msg }}</p>
+          <p>{{ result_msg|safe }}</p>
           {% if identify_successful %}
           <h5>{{ ingredient.name }}</h5>
           <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.description }}</i></p>
@@ -90,7 +90,7 @@
             <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Terrain: </b><i>
               {{ ', '.join(ingredient.terrain) }}
             </i></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details }}</i></p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details|safe }}</i></p>
             {% endif %}
           {% endif %}
         </div>

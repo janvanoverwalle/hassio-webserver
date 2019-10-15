@@ -7,14 +7,11 @@
       {% for option in options %}
         {% set is_selected = '' %}
         {% if option.selected is defined and option.selected %}
-          <!-- {{ option.selected|int }} -->
           {% if option.selected|string|int != 0 %}
-            <!-- number -->
             {% if option.selected == selected %}
               {% set is_selected = 'selected' %}
             {% endif %}
           {% else %}
-            <!-- not number -->
             {% set is_selected = 'selected' %}
           {% endif %}
         {% endif %}

@@ -5,7 +5,7 @@ from .data.http_methods import HttpMethods
 from .data.bootstrap_helper import BootstrapContextualClasses
 from .data.terrain_tables import TerrainTables
 from .data.ingredients import Ingredients
-from .utilities.generic import create_select_data
+from .utilities.generic import create_select_data, highlight_conditions
 from .utilities.dice import Dice
 
 app = Flask(__name__)
@@ -32,24 +32,40 @@ def crafting(data_dict, args):
     for ingredient in modifier_ingredients:
         if not ingredient:
             continue
-        ingredients.append(Ingredients.retrieve(ingredient, key=lambda i: i.id())[0])
+        retrieved_ingredients = Ingredients.retrieve(ingredient, key=lambda i: i.id())
+        if not retrieved_ingredients:
+            continue
+        ingredients.append(retrieved_ingredients[0])
 
-    valid_types = len([i for i in ingredients if set(base_ingredient.type()).intersection(i.type())])
-    is_valid_recipe = valid_types <= (1 if base_ingredient.is_enchantment() else 3)
+    base_type_set = set(base_ingredient.type())
+    matching_ingredients = [i for i in ingredients if base_type_set.intersection(i.type())]
+    valid_types = len(matching_ingredients) == len(ingredients)
 
-    if is_valid_recipe:
-        identify_result_class = BootstrapContextualClasses.SUCCESS
-    else:
-        identify_result_class = BootstrapContextualClasses.ERROR
-    data_dict['crafting_result_class'] = identify_result_class
+    if not valid_types:
+        data_dict['crafting_result_class'] = BootstrapContextualClasses.ERROR
+        data_dict['result_msg'] = (
+            f'The following ingredients cannot be combined with {base_ingredient.name()}: '
+            f'{", ".join([i.name() for i in ingredients if i not in matching_ingredients])}'
+        )
+        return
+
+    effect_ingredients = [i for i in ingredients + [base_ingredient] if i.is_effect()]
+    max_effects = 2 if Ingredients.BLOODGRASS in effect_ingredients else 1
+    valid_effects = len(effect_ingredients) <= max_effects
+
+    if not valid_effects:
+        data_dict['crafting_result_class'] = BootstrapContextualClasses.ERROR
+        s = '' if max_effects == 1 else 's'
+        data_dict['result_msg'] = (
+            f'Only {max_effects} <i>Effect</i> ingredient{s} can be used in the same concoction.'
+        )
+        return
 
     attempt_dc = 10 + base_ingredient.dc() + sum([i.dc() for i in ingredients])
 
-    # TODO: Continue implementation
-
+    data_dict['crafting_result_class'] = BootstrapContextualClasses.SUCCESS
     data_dict['result_msg'] = f'DC to craft this concoction is {attempt_dc}.'
-
-    app.logger.info(data_dict)
+    data_dict['ingredients'] = [i.to_dict(highlight=True) for i in [base_ingredient] + ingredients]
 
 
 def gathering(data_dict, args):
@@ -85,7 +101,7 @@ def gathering(data_dict, args):
         ingredient, special = TerrainTables.retrieve_ingredient(terrain_type)
         data_dict['ingredients'] = []
         tmp_dict = {
-            'ingredient': ingredient.ingredient.to_dict(),
+            'ingredient': ingredient.ingredient.to_dict(highlight=True),
             'amount': ingredient.apply_multiplier(Dice('1d4').roll()),
             'remarks': ingredient.remarks,
             'msg': 'Wow!' if special else ''
@@ -94,7 +110,7 @@ def gathering(data_dict, args):
 
         if ingredient.additional:
             tmp_dict = {
-                'ingredient': ingredient.additional.to_dict(),
+                'ingredient': ingredient.additional.to_dict(highlight=True),
                 'amount': 1,
                 'msg': 'Extra!'
             }
@@ -138,7 +154,7 @@ def identifying(data_dict, args):
 
     if identify_successful:
         data_dict['identify_roll'] = identify_roll
-        data_dict['ingredient'] = ingredient.to_dict()
+        data_dict['ingredient'] = ingredient.to_dict(highlight=True)
 
     data_dict['result_msg'] = (
         f'Player rolled {identify_roll}, '
@@ -169,11 +185,11 @@ def dnd_alchemy():
     ingredient_list = Ingredients.to_list()
     base_ingredient_options = create_select_data([i for i in ingredient_list if i.is_effect()])
     ingredient_options = create_select_data([i for i in ingredient_list if not i.is_effect() or i.is_special()])
+    ingredient_options.insert(0, create_select_data({'name': 'None', 'value': -0x01})[0])
 
     data_dict = {
         'base_ingredient_options': base_ingredient_options,
-        'ingredient_options': ingredient_options,
-        # 'ingredients': [i.to_dict() for i in ingredient_list]
+        'ingredient_options': ingredient_options
     }
 
     if HttpMethods.is_post(request.method):

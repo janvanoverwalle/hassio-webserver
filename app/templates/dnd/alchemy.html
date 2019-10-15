@@ -32,7 +32,15 @@
         {% if crafting_result_class %}
         <div class="mt-4">
           <h4 class="text-{{ crafting_result_class }}">Result</h4>
-          <p>{{ result_msg }}</p>
+          <p>{{ result_msg|safe }}</p>
+          {% if ingredients %}
+            <span><b>Effects:</b></span>
+            <ul>
+            {% for ingredient in ingredients %}
+              <li>{{ ingredient.details|safe }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
         </div>
         {% endif %}
       </div>

@@ -52,7 +52,7 @@ class Ingredient(object):
         if new_type is not None:
             cls._type = new_type
         if not isinstance(cls._type, list):
-            cls._type = [cls._type]
+            cls._type = [cls._type] if cls._type else []
         return cls._type
 
     @classmethod
@@ -106,7 +106,7 @@ class Ingredient(object):
         if new_terrain is not None:
             cls._terrain = new_terrain
         if not isinstance(cls._terrain, list):
-            cls._terrain = [cls._terrain]
+            cls._terrain = [cls._terrain] if cls._terrain else []
         return cls._terrain
 
     @classmethod
@@ -122,7 +122,11 @@ class Ingredient(object):
         return cls._description
 
     @classmethod
-    def to_dict(cls):
+    def to_dict(cls, **kwargs):
+        parse = lambda s: s
+        if kwargs.get('highlight'):
+            parse = lambda s: s.replace('[', '<i>[').replace(']', ']</i>')
+
         return {
             'name': cls.name(),
             'id': cls.id(),
@@ -131,11 +135,11 @@ class Ingredient(object):
             'price_range': cls.price_range(),
             'special': cls.is_special(),
             'function': cls.function(),
-            'details': cls.details(),
+            'details': parse(cls.details()),
             'dc': cls.dc(),
             'terrain': cls.terrain(),
             'property': cls.property(),
-            'description': cls.description()
+            'description': parse(cls.description())
         }
 
 
@@ -1255,6 +1259,11 @@ class Ingredients(object):
 
         ret = []
         allowed_chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+        try:
+            int(ingredient)
+            allowed_chars += '-'  # Is number, so allow minus sign
+        except ValueError:
+            pass
         for i in cls.to_list():
             k = key(i)
             s1 = ''.join([c for c in str(k).lower() if c in allowed_chars])
