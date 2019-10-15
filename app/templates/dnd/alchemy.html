@@ -12,17 +12,17 @@
           {% endwith %}
 
           <!-- Ingredient input -->
-          {% with name='ingredient_1', label='Ingredient 1', options=ingredient_options, selected=1 %}
+          {% with name='ingredient_1', label='Ingredient 1', class='d-none', options=ingredient_options, selected=1 %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 
           <!-- Ingredient input -->
-          {% with name='ingredient_2', label='Ingredient 2', options=ingredient_options, selected=2 %}
+          {% with name='ingredient_2', label='Ingredient 2', class='d-none', options=ingredient_options, selected=2 %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 
           <!-- Ingredient input -->
-          {% with name='ingredient_3', label='Ingredient 3', options=ingredient_options, selected=3 %}
+          {% with name='ingredient_3', label='Ingredient 3', class='d-none', options=ingredient_options, selected=3 %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 

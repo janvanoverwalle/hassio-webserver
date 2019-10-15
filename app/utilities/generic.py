@@ -1,7 +1,7 @@
 """ Generic Utilities module """
 
 
-def create_select_data(it):
+def create_select_data(it, **kwargs):
     if not isinstance(it, (list, tuple)):
         it = [it]
 
@@ -12,7 +12,10 @@ def create_select_data(it):
             value = i.get('value')
         else:
             try:
-                types_str = f' - ({", ".join(i.type())})' if i.type() else ''
+                if kwargs.get('exclude_types'):
+                    types_str = ''
+                else:
+                    types_str = f' - ({", ".join(i.type())})' if i.type() else ''
                 name = f'{i.name()}{types_str}'
                 value = i.id()
             except AttributeError:
@@ -20,7 +23,3 @@ def create_select_data(it):
                 value = name.lower().replace(' ', '-')
         ret.append({'name': name, 'value': value})
     return ret
-
-
-def highlight_conditions(str):
-    return str.replace('[', '<i>[').replace(']', ']</i>')

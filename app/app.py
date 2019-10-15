@@ -5,7 +5,7 @@ from .data.http_methods import HttpMethods
 from .data.bootstrap_helper import BootstrapContextualClasses
 from .data.terrain_tables import TerrainTables
 from .data.ingredients import Ingredients
-from .utilities.generic import create_select_data, highlight_conditions
+from .utilities.generic import create_select_data
 from .utilities.dice import Dice
 
 app = Flask(__name__)
@@ -208,7 +208,7 @@ def dnd_herbalism():
     terrain_excludes = [TerrainTypes.MOST, TerrainTypes.SPECIAL]
     terrain_options = create_select_data(TerrainTypes.to_list(exclude=terrain_excludes))
     travel_options = create_select_data(TravelMethods.to_list())
-    ingredient_options = create_select_data(Ingredients.to_list())
+    ingredient_options = create_select_data(Ingredients.to_list(), exclude_types=True)
 
     data_dict = {
         'terrain_options': terrain_options,

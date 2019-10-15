@@ -32,23 +32,21 @@
             {% for ingredient in ingredients %}
               <p>
                 {% if ingredient.msg %}
-                <span class="text-warning">{{ ingredient.msg }} </span>
+                  <span class="text-warning">{{ ingredient.msg }} </span>
                 {% endif %}
                 <span>Succesfully gathered {{ ingredient.amount }} {{ ingredient.ingredient.name }}.</span>
               </p>
               {% if ingredient.remarks %}
-              <p>{{ ingredient.remarks }}</p>
+                <p>{{ ingredient.remarks }}</p>
               {% endif %}
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.ingredient.description }}</i></p>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Rarity: </b><i>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b>{{ ingredient.ingredient.description }}</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Rarity: </b>
                 {{ ingredient.ingredient.rarity }}
                 ({{ ingredient.ingredient.price_range[0] }} - {{ ingredient.ingredient.price_range[1] }}gp)
-              </i></p>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>DC: </b><i>{{ ingredient.ingredient.dc }}</i></p>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Terrain: </b><i>
-                {{ ', '.join(ingredient.ingredient.terrain) }}
-              </i></p>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.ingredient.details|safe }}</i></p>
+              </p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>DC: </b>{{ ingredient.ingredient.dc }}</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Terrain: </b>{{ ', '.join(ingredient.ingredient.terrain) }}</p>
+              <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b>{{ ingredient.ingredient.details|safe }}</p>
             {% endfor %}
           {% endif %}
         </div>
@@ -80,17 +78,16 @@
           <p>{{ result_msg|safe }}</p>
           {% if identify_successful %}
           <h5>{{ ingredient.name }}</h5>
-          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b><i>{{ ingredient.description }}</i></p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Description: </b>{{ ingredient.description }}</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Type: </b>{{ ', '.join(ingredient.type) }}</p>
             {% if show_details %}
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Rarity: </b><i>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Rarity: </b>
               {{ ingredient.rarity }}
               ({{ ingredient.price_range[0] }} - {{ ingredient.price_range[1] }}gp)
-            </i></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>DC: </b><i>{{ '%+d' % ingredient.dc }}</i></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Terrain: </b><i>
-              {{ ', '.join(ingredient.terrain) }}
-            </i></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b><i>{{ ingredient.details|safe }}</i></p>
+            </p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>DC: </b>{{ '%+d' % ingredient.dc }}</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Terrain: </b>{{ ', '.join(ingredient.terrain) }}</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>Effect: </b>{{ ingredient.details|safe }}</p>
             {% endif %}
           {% endif %}
         </div>
