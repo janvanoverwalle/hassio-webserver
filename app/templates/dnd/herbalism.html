@@ -12,12 +12,12 @@
           {% endwith %}
 
           <!-- Travel Method input -->
-          {% with name='travel_method', label='Travel Method', options=travel_options %}
+          {% with name='travel_method', label='Travel Method', class='mb-3', options=travel_options %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 
           <!-- Terrain input -->
-          {% with name='terrain_type', label='Terrain', options=terrain_options %}
+          {% with name='terrain_type', label='Terrain', class='mb-3', options=terrain_options %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 
@@ -65,7 +65,7 @@
           {% endwith %}
 
           <!-- Ingredient input -->
-          {% with name='identify_ingredient', label='Ingredient', options=ingredient_options %}
+          {% with name='identify_ingredient', label='Ingredient', class='mb-3', options=ingredient_options %}
             {% include "components/dropdown.html" %}
           {% endwith %}
 

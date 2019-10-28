@@ -2,5 +2,9 @@
   <div class="input-group-prepend">
     <span class="input-group-text label-8" id="{{ name }}_lbl">{{ label }}</span>
   </div>
-  <input type="{{ type }}" id="{{ name }}" name="{{ name }}" class="form-control" {% if default_value %} value="{{ default_value }}" {% endif %} placeholder="{{ placeholder }}" aria-describedby="{{ name }}_lbl">
+  <input type="{{ type }}" id="{{ name }}" name="{{ name }}"
+  class="form-control {{ class }}"
+  {% if attributes %} {{ attributes }} {% endif %}
+  {% if default_value %} value="{{ default_value }}" {% endif %}
+  placeholder="{{ placeholder }}" aria-describedby="{{ name }}_lbl">
 </div>

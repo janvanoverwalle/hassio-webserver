@@ -23,3 +23,10 @@ def create_select_data(it, **kwargs):
                 value = name.lower().replace(' ', '-')
         ret.append({'name': name, 'value': value})
     return ret
+
+def update_selected(options, value, selected=True):
+    for o in options:
+        if o['value'] != value:
+            continue
+        o['selected'] = selected
+        break

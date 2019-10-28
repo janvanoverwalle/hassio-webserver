@@ -17,6 +17,10 @@ body {
   width: 8em;
 }
 
+.label-a {
+  width: auto;
+}
+
 .label-2 {
   width: 2em;
 }
@@ -35,6 +39,19 @@ body {
 
 .label-12 {
   width: 12em;
+}
+
+.icon_arrow {
+  width: 32px;
+}
+
+.month-header {
+  width: 100%;
+}
+
+.month-cell {
+  width: 120px;
+  height: 120px !important;
 }
 
 .bottom-spacer, .bottom-spacer-sm {

@@ -1,0 +1,37 @@
+<div class="table-responsive">
+  <table class="table table-bordered mt-4">
+    <thead class="thead-dark">
+      <tr>
+        {% for day in calendar.days %}
+          <th class="text-center">{{ day }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for day in calendar.days %}
+        <td>
+          <div>
+            <p class="lead text-center">{{ calendar.dates[loop.index-1] }}</p>
+          </div>
+          <div>
+            <h6>Events</h6>
+            <p>{{ calendar.events[loop.index-1] | join(", ") }}</p>
+          </div>
+          <div>
+            <h6>Celestial Events</h6>
+            <p>{{ calendar.celestial[loop.index-1] | join(", ") }}</p>
+          </div>
+          <div>
+            <h6>Weather</h6>
+            <p>{{ calendar.weather.tags[loop.index-1] | join(", ") }}</p>
+            <ul>
+              {% for description in calendar.weather.descriptions[loop.index-1] %}
+              <li>{{ description }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </td>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

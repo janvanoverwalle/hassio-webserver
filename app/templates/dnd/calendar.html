@@ -1,0 +1,37 @@
+{% extends "content.html" %} {% block content %}
+<div class="container my-4">
+  <div class="row">
+    <div class="col-sm-6">
+      <h2>Calendar</h2>
+    </div> <!-- /column -->
+    <div class="col-sm-6">
+      <form method="post" id="display_form">
+        {% with name='display_mode', label='Display', label_width='label-a', options=display_options, class='w-50 float-right', onchange='this.form.submit()' %}
+          {% include "components/dropdown.html" %}
+        {% endwith %}
+      </form>
+    </div> <!-- /column -->
+  </div> <!-- /row -->
+  <hr class="mt-2">
+  <div class="row">
+    <div class="col-sm-6">
+      {% with name='campaign_start', label='Campaign Start', type='text', class='bg-white text-right pr-4', default_value=calendar.campaign_start, attributes='readonly' %}
+        {% include "components/input.html" %}
+      {% endwith %}
+    </div>
+    <div class="col-sm-3">
+      {% with name='current_day', label='Current Day', type='number', class='text-right', default_value=calendar.current_day %}
+        {% include "components/input.html" %}
+      {% endwith %}
+    </div>
+    <div class="col-sm-3">
+      {% with name='days_passed', label='Days Passed', type='number', class='bg-white text-right', default_value=calendar.days_passed, attributes='readonly' %}
+        {% include "components/input.html" %}
+      {% endwith %}
+    </div>
+  </div>
+  <div class="row bottom-spacer-sm">
+    {% include "calendar/" + display_template + ".html" %}
+  </div> <!-- /row -->
+</div> <!-- /container -->
+{% endblock %}

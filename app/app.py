@@ -5,8 +5,9 @@ from .data.http_methods import HttpMethods
 from .data.bootstrap_helper import BootstrapContextualClasses
 from .data.terrain_tables import TerrainTables
 from .data.ingredients import Ingredients
-from .utilities.generic import create_select_data
+from .utilities.generic import create_select_data, update_selected
 from .utilities.dice import Dice
+
 
 app = Flask(__name__)
 
@@ -17,10 +18,8 @@ def crafting(data_dict, args):
     base_ingredient = args.get('base_ingredient')
     modifier_ingredients = [args.get(f'ingredient_{i+1}') for i in range(3)]
 
-    for o in data_dict['base_ingredient_options']:
-        if o['value'] == int(base_ingredient):
-            o['selected'] = True
-            break
+    update_selected(data_dict['base_ingredient_options'], int(base_ingredient))
+
     for o in data_dict['ingredient_options']:
         for i in range(len(modifier_ingredients)):
             if o['value'] == int(modifier_ingredients[i]):
@@ -78,14 +77,9 @@ def gathering(data_dict, args):
     travel_method = args.get('travel_method')
 
     data_dict['prev_gather_roll'] = gathering_roll
-    for o in data_dict['terrain_options']:
-        if o['value'] == terrain_type:
-            o['selected'] = True
-            break
-    for o in data_dict['travel_options']:
-        if o['value'] == travel_method:
-            o['selected'] = True
-            break
+
+    update_selected(data_dict['terrain_options'], terrain_type)
+    update_selected(data_dict['travel_options'], travel_method)
 
     gathering_successful = TravelMethods.is_gathering_successful(travel_method, gathering_roll)
     data_dict['gathering_successful'] = gathering_successful
@@ -131,10 +125,7 @@ def identifying(data_dict, args):
     identify_ingredient = args.get('identify_ingredient')
 
     data_dict['prev_identify_roll'] = identify_roll
-    for o in data_dict['ingredient_options']:
-        if o['value'] == identify_ingredient:
-            o['selected'] = True
-            break
+    update_selected(data_dict['ingredient_options'], identify_ingredient)
 
     ingredient = Ingredients.retrieve(identify_ingredient, key=lambda i: i.id())[0]
 
@@ -162,6 +153,107 @@ def identifying(data_dict, args):
     )
 
 
+def construct_schedule_data(data_dict):
+    data_dict['calendar']['days'] = [
+        'Yesterday',
+        'Today',
+        'Tomorrow'
+    ]
+    data_dict['calendar']['dates'] = [
+        'Tirdas, 14th of Last Seed, 3E2026',
+        'Middas, 15th of Last Seed, 3E2026',
+        'Turdas, 16th of Last Seed, 3E2026'
+    ]
+    data_dict['calendar']['events'] = [
+        ['None'],
+        ['None'],
+        ['None']
+    ]
+    data_dict['calendar']['celestial'] = [
+        ['None'],
+        ['Full moon (Lunitari)', 'Shooting star(s)'],
+        ['Full moon (Lunitari)']
+    ]
+    data_dict['calendar']['weather'] = {
+        'tags': [
+            ['Warm', 'Sunny', 'Humid'],
+            ['Hot', 'Thunderheads', 'Showers', 'Stormy'],
+            ['Mild', 'Clear', 'Windy']
+        ],
+        'descriptions': [
+            [
+                'Uncomfortably warm days, pleasant nights.',
+                'Cloudless skies, excellent visibility.',
+                'Air laden with moisture, stifling.',
+                'Driving, unpredictable winds.'
+            ],
+            [
+                'Very warm days, warm nights.',
+                'Dense dark clouds, often lightning.',
+                'Occasional sprinkles, light rain & brief downpours.'
+            ],
+            [
+                'Agreeable temperatures all day, chilly nights.',
+                'Very few clouds in the sky, good visibility.',
+                'Strong, steady winds ideal for sailing.'
+            ]
+        ]
+    }
+
+
+def construct_week_data(data_dict):
+    data_dict['calendar']['days_in_week'] = 7
+    data_dict['calendar']['weekdays'] = [
+        'Morndas',
+        'Tirdas',
+        'Middas',
+        'Turdas',
+        'Fredas',
+        'Loredas',
+        'Sundas'
+    ]
+    data_dict['calendar']['day_of_month'] = [ 8, 9, 10, 11, 12, 13, 14]
+    data_dict['calendar']['events'] = [
+        ['None'],
+        ['None'],
+        ['None'],
+        ['None'],
+        ['None'],
+        ['None'],
+        ['None']
+    ]
+    data_dict['calendar']['weather'] = {
+        'tags': [
+            ['Warm', 'Sunny', 'Humid'],
+            ['Hot', 'Thunderheads', 'Showers', 'Stormy'],
+            ['Mild', 'Clear', 'Windy']
+        ]
+    }
+
+
+def construct_month_data(data_dict):
+    from random import choices
+
+    data_dict['calendar']['days_in_week'] = 7
+    data_dict['calendar']['weekdays'] = [
+        'Morndas',
+        'Tirdas',
+        'Middas',
+        'Turdas',
+        'Fredas',
+        'Loredas',
+        'Sundas'
+    ]
+    data_dict['calendar']['days_in_month'] = 30
+    data_dict['calendar']['events'] = choices([0, 1, 2], [0.5, 0.3, 0.2], k=30)
+    data_dict['calendar']['first_weekday_of_month'] = 3
+
+
+
+def construct_year_data(data_dict):
+    pass
+
+
 @app.route('/')
 def index():
     pages = [{
@@ -169,6 +261,9 @@ def index():
         'sections': [{
             'href': 'dnd_alchemy',
             'text': 'Alchemy'
+        }, {
+            'href': 'dnd_calendar',
+            'text': 'Calendar'
         }, {
             'href': 'dnd_herbalism',
             'text': 'Herbalism'
@@ -200,6 +295,46 @@ def dnd_alchemy():
     return render_template('dnd/alchemy.html',
                            favicon='dnd/alchemy_b',
                            title='Hass.io Web | D&D | Alchemy',
+                           **data_dict)
+
+
+@app.route('/dnd/calendar', methods=[HttpMethods.GET, HttpMethods.POST])
+def dnd_calendar():
+    args = request.form
+
+    display_options = create_select_data(['Schedule', 'Week', 'Month', 'Year'])
+    display_template = args.get('display_mode', 'schedule')
+    if args.get('prev_month') or args.get('next_month'):
+        display_template = 'month'
+        # TODO: Pagination
+
+    update_selected(display_options, display_template)
+
+    data_dict = {
+        'display_options': display_options,
+        'display_template': display_template,
+        'calendar': {
+            'campaign_start': 'Tirdas, 11th of First Seed, 3E2026',
+            'current_day': 155,
+            'days_passed': 154,
+            'age' : 3,
+            'year': 2026,
+            'month': 'Last Seed'
+        }
+    }
+
+    if display_template == 'schedule':
+        construct_schedule_data(data_dict)
+    elif display_template == 'week':
+        construct_week_data(data_dict)
+    elif display_template == 'month':
+        construct_month_data(data_dict)
+    elif display_template == 'year':
+        construct_year_data(data_dict)
+
+    return render_template('dnd/calendar.html',
+                           favicon='dnd/calendar_b',
+                           title='Hass.io Web | D&D | Calendar',
                            **data_dict)
 
 

@@ -1,0 +1,43 @@
+<div class="table-responsive">
+  <table class="table table-bordered mt-4">
+    <thead class="thead-dark">
+      <tr>
+        <th colspan="7" class="text-center">
+          <h4>{{ calendar.month + ", " + calendar.age|string + "E" + calendar.year|string}}</h4>
+        </th>
+      </tr>
+      <tr>
+        {% for weekday in calendar.weekdays %}
+          <th class="text-center">{{ weekday }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for weekday in calendar.weekdays %}
+          <td class="mw-6em">
+            <div>
+              <p class="lead">{{ calendar.day_of_month[loop.index-1] }}</p>
+            </div>
+            <div>
+              <h6>Events</h6>
+              <ul>
+                {% for event in calendar.events[loop.index-1] %}
+                  <li>{{ event }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <h6>Weather</h6>
+              <ul>
+                {% for weather in calendar.weather.tags[loop.index-1] %}
+                  <li>{{ weather }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>

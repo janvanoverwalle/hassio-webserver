@@ -26,7 +26,7 @@ function switch_theme(e) {
   }
 }
 
-/* Base Ingredient Change event */
+/* Base Ingredient Change Event */
 const TYPE_POTION = 'Potion'
 const TYPE_POISON = 'Poison'
 const TYPE_ENCHANTMENT = 'Enchantment'
@@ -34,8 +34,10 @@ const TYPE_ENCHANTMENT = 'Enchantment'
 var _previous_concoction_was_enchantment = null
 
 window.onload = (event) => {
-  _change_element_display('ingredient_1_root', 'flex')
-  on_base_ingredient_change(document.getElementById('base_ingredient'))
+  if (window.location.pathname.includes('alchemy')) {
+    _change_element_display('ingredient_1_root', 'flex')
+    on_base_ingredient_change(document.getElementById('base_ingredient'))
+  }
 }
 
 function on_base_ingredient_change(sender) {

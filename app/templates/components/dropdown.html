@@ -1,6 +1,9 @@
-<div class="input-group mb-3 w-100 {{ class }}" id="{{ name }}_root">
+<div class="input-group {% if 'w-' not in class %} w-100 {% endif %} {{ class }}" id="{{ name }}_root">
   <div class="input-group-prepend">
-    <span class="input-group-text label-8" id="{{ name }}_lbl">{{ label }}</span>
+    {% if not label_width %}
+      {% set label_width = 'label-8' %}
+    {% endif %}
+    <span class="input-group-text {{ label_width }}" id="{{ name }}_lbl">{{ label }}</span>
   </div>
   <select name="{{ name }}" id="{{ name }}" {% if onchange %} onchange="{{ onchange }}" {% endif %} class="custom-select" aria-describedby="{{ name }}_lbl">
     {% if options %}

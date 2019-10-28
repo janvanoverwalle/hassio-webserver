@@ -1,0 +1,54 @@
+<div class="table-responsive">
+  <table class="table table-bordered mt-4">
+    <thead class="thead-dark">
+      <tr>
+        <th colspan="7" class="text-center">
+          <div class="row">
+            <div class="col-1">
+              <form method="post" id="prev_month_form">
+                <input type="hidden" id="prev_month" name="prev_month" value="-1">
+                <input type="submit" class="btn btn-dark" value="&lt;&lt;">
+              </form>
+            </div>
+            <div class="col-10"><h4>{{ calendar.month + ", " + calendar.age|string + "E" + calendar.year|string}}</h4></div>
+            <form method="post" id="next_month_form">
+              <input type="hidden" id="next_month" name="next_month" value="+1">
+              <input type="submit" class="btn btn-dark" value="&gt;&gt;">
+            </form>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        {% for weekday in calendar.weekdays %}
+          <th class="text-center">{{ weekday }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for index in range(calendar.first_weekday_of_month-1) %}
+          <td class="month-cell"></td>
+        {% endfor %}
+        {% for index in range(calendar.days_in_month) %}
+          {% if index > 0 and (index + calendar.first_weekday_of_month - 1) % calendar.days_in_week == 0 %}
+            </tr>
+            <tr>
+          {% endif %}
+          <td class="month-cell">
+            <div>
+              <p class="lead">{{ index+1 }}</p>
+            </div>
+            {% if calendar.events[index] > 0 %}
+              <div>
+                <span class="h6">Events:</span><span> {{ calendar.events[index] }}<span>
+              </div>
+            {% endif %}
+          </td>
+        {% endfor %}
+        {% for index in range(calendar.days_in_week - (calendar.first_weekday_of_month - 1 + calendar.days_in_month) % calendar.days_in_week) %}
+          <td class="month-cell"></td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+</div>
