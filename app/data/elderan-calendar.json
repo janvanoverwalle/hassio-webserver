@@ -1,0 +1,80 @@
+{
+  "year_len": 363,
+  "events": 1,
+  "n_months": 12,
+  "months": [
+    "Morning Star",
+    "Sun's Dawn",
+    "First Seed",
+    "Rain's Hand",
+    "Second Seed",
+    "Mid Year",
+    "Sun's Height",
+    "Last Seed",
+    "Hearth Fire",
+    "Frost Fall",
+    "Sun's Dusk",
+    "Evening Star"
+  ],
+  "month_len": {
+    "Morning Star": 30,
+    "Sun's Dawn": 31,
+    "First Seed": 30,
+    "Rain's Hand": 30,
+    "Second Seed": 30,
+    "Mid Year": 30,
+    "Sun's Height": 31,
+    "Last Seed": 30,
+    "Hearthfire": 30,
+    "Frost Fall": 30,
+    "Sun's Dusk": 31,
+    "Evening Star": 30
+  },
+  "week_len": 7,
+  "weekdays": [
+    "Morndas",
+    "Tirdas",
+    "Middas",
+    "Turdas",
+    "Fredas",
+    "Loredas",
+    "Sundas"
+  ],
+  "n_moons": 3,
+  "moons": [
+    "Solinari",
+    "Lunitari",
+    "Nuitari"
+  ],
+  "lunar_cyc": {
+    "Solinari": 36,
+    "Lunitari": 28,
+    "Nuitari": 8
+  },
+  "lunar_shf": {
+    "Solinari": 9,
+    "Lunitari": 7,
+    "Nuitari": 2
+  },
+  "year": 2026,
+  "first_day": 0,
+  "notes": {
+    "2026-1-1": "New Life Festival",
+    "2026-1-15": "South Wind's Prayer",
+    "2026-2-16": "Heart's Day",
+    "2026-3-7": "First Planting",
+    "2026-4-28": "Jester's Day",
+    "2026-5-7": "Second Planting",
+    "2026-6-16": " Mid Year Celebration",
+    "2026-7-20": "Sun's Rest",
+    "2026-8-27": "Harvest's End",
+    "2026-10-13": "Witches' Festival",
+    "2026-11-20": "Warriors Festival",
+    "2026-12-25": "New Life Festival",
+    "2026-12-30": "Old Life Festival"
+  },
+  "campaign_start": "2026-3-11",
+  "current_year": 2026,
+  "month_of_year": 8,
+  "day_of_month": 15
+}
