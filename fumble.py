@@ -1,12 +1,22 @@
 import os
-from app.objects.donjon_calendar import DonjonCalendar
+from app.modules.donjon.calendar import ElderanCalendar
+from app.modules.donjon.date import ElderanDate
 
+# Start date: Tirdas, 11th of First Seed, 3E2026
+# Current date: Middas, 15th of Last Seed, 3E2026 (day 155 since camp. start)
 
 def main():
-    calendar = DonjonCalendar('app/data/elderan-calendar.json')
+    calendar = ElderanCalendar()
 
-    # Start date: Tirdas, 11th of First Seed, 3E2026
-    # Current date: Middas, 15th of Last Seed, 3E2026 (day 155 since camp. start)
+    # print('Tirdas, 11th of First Seed, 3E2026')
+    start_date = ElderanDate(2026, 3, 11)
+    print(f'{start_date.descr_format()}')
+
+    # print('Middas, 15th of Last Seed, 3E2026')
+    current_date = ElderanDate.today()
+    print(f'{current_date.descr_format()}')
+
+    return  # temporary
 
     calendar.campaign_start = '2026-3-11'
     calendar.today = '2026-8-15'

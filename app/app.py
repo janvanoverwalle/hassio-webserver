@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request
-from .objects.terrain_types import TerrainTypes
-from .objects.travel_methods import TravelMethods
-from .objects.http_methods import HttpMethods
-from .objects.bootstrap_helper import BootstrapContextualClasses
-from .objects.terrain_tables import TerrainTables
-from .objects.ingredients import Ingredients
-from .objects.donjon_calendar import DonjonCalendar
+from .modules.terrain_types import TerrainTypes
+from .modules.travel_methods import TravelMethods
+from .modules.http_methods import HttpMethods
+from .modules.bootstrap_helper import BootstrapContextualClasses
+from .modules.terrain_tables import TerrainTables
+from .modules.ingredients import Ingredients
+from .modules.donjon.calendar import DonjonCalendar
 from .utilities.generic import create_select_data, update_selected
 from .utilities.dice import Dice
 

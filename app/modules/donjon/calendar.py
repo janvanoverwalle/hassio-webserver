@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+from pathlib import Path
 
 
 class DonjonCalendar(object):
@@ -139,8 +140,7 @@ class DonjonCalendar(object):
     def year(self):
         return self._json_data['year']
 
-    @year.setter
-    def year(self, value):
+    def _set_year(self, value):
         self._json_data['year'] = int(value)
         if self.auto_save:
             self.save()
@@ -149,8 +149,7 @@ class DonjonCalendar(object):
     def days_in_year(self):
         return self._json_data['year_len']
 
-    @days_in_year.setter
-    def days_in_year(self, value):
+    def _set_days_in_year(self, value):
         self._json_data['year_len'] = int(value)
         if self.auto_save:
             self.save()
@@ -159,8 +158,7 @@ class DonjonCalendar(object):
     def months_in_year(self):
         return self._json_data['n_months']
 
-    @months_in_year.setter
-    def months_in_year(self, value):
+    def _set_months_in_year(self, value):
         self._json_data['n_months'] = int(value)
         if self.auto_save:
             self.save()
@@ -168,7 +166,7 @@ class DonjonCalendar(object):
     def get_months(self, month=None):
         return self._get_element(self._json_data['months'], month)
 
-    def set_months(self, *args, **kwargs):
+    def _set_months(self, *args, **kwargs):
         self._set_element(self._json_data['months'], *args, **kwargs)
         self.months_in_year = len(self._json_data['months'])  # autosaves
 
@@ -329,3 +327,9 @@ class DonjonCalendar(object):
         self.current_year = year
         self.month_of_year = month
         self.day_of_month = day
+
+
+class ElderanCalendar(DonjonCalendar):
+    def __init__(self):
+        path = Path(__file__).parents[2]/'data'/'elderan-calendar.json'
+        super().__init__(path)
