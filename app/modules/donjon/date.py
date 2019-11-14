@@ -94,13 +94,13 @@ class DonjonDate(object):
     # Additional constructors
 
     @classmethod
-    def from_ordinal(cls, n):
-        y, m, d = cls(None)._ord2ymd(n)
+    def from_ordinal(cls, ordinal):
+        y, m, d = cls(None)._ord2ymd(ordinal)
         return cls(y, m, d)
 
     @classmethod
-    def from_string(cls, s):
-        v = list(map(int, re.split(r'\D+', str(s))))
+    def from_iso_format(cls, date_string):
+        v = list(map(int, re.split(r'\D+', str(date_string))))
         return cls(v[0], v[1], v[2])
 
     @classmethod
