@@ -2,6 +2,7 @@ import datetime
 import json
 import re
 from pathlib import Path
+from .date import DonjonDate
 
 
 class DonjonCalendar(object):
@@ -95,32 +96,12 @@ class DonjonCalendar(object):
     ### Custom Properties ###
 
     @property
-    def current_year(self):
-        return self._json_data.get('current_year', self.year)
+    def current_date(self):
+        return self._json_data.get('current_date', self.year)
 
-    @current_year.setter
-    def current_year(self, value):
-        self._json_data['current_year'] = int(value)
-        if self.auto_save:
-            self.save()
-
-    @property
-    def month_of_year(self):
-        return self._json_data.get('month_of_year', 1)
-
-    @month_of_year.setter
-    def month_of_year(self, value):
-        self._json_data['month_of_year'] = int(value)
-        if self.auto_save:
-            self.save()
-
-    @property
-    def day_of_month(self):
-        return self._json_data.get('day_of_month', 1)
-
-    @day_of_month.setter
-    def day_of_month(self, value):
-        self._json_data['day_of_month'] = int(value)
+    @current_date.setter
+    def current_date(self, value):
+        self._json_data['current_date'] = str(value)
         if self.auto_save:
             self.save()
 

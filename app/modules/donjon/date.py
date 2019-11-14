@@ -39,7 +39,6 @@ class DonjonDate(object):
         self.__days_in_month = json_data.get('month_len', [])
         self.__days_in_year = json_data.get('year_len', 0)
         self.__months_in_year = json_data.get('n_months', 0)
-        self.__first_weekday = json_data.get('first_day', 0)
 
         self.__year = year
         self.__month = month
@@ -205,7 +204,7 @@ class DonjonDate(object):
         return cmp((y1, m1, d1), (y2, m2, d2))
 
     def weekday(self):
-        return (self.__first_weekday + self.to_ordinal() % self.__days_in_week) + 1
+        return (self.to_ordinal() % self.__days_in_week) + 1
 
 
 class ElderanDate(DonjonDate):
