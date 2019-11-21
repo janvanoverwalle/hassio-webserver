@@ -107,8 +107,8 @@ class DonjonDate(object):
         with open(cls(None).__calendar_file) as json_file:
             json_data = json.load(json_file)
         default_year = json_data.get('year', 1)
-        date_str = json_data.get('current-date', f'{default_year}-1-1')
-        return cls.from_string(date_str)
+        date_str = json_data.get('current_date', f'{default_year}-1-1')
+        return cls.from_iso_format(date_str)
 
     # String conversions
 
@@ -137,11 +137,11 @@ class DonjonDate(object):
         return self.__year
 
     @property
-    def year(self):
+    def month(self):
         return self.__month
 
     @property
-    def year(self):
+    def day(self):
         return self.__day
 
     # Conversions
@@ -202,6 +202,29 @@ class DonjonDate(object):
         y1, m1, d1 = self.__year, self.__month, self.__day
         y2, m2, d2 = other.__year, other.__month, other.__day
         return cmp((y1, m1, d1), (y2, m2, d2))
+
+    def __add__(self, other):
+        # TODO: Make work (pulled directly from Python's atetime)
+        if isinstance(other, timedelta):
+            t = tmxxx(self.__year,
+                      self.__month,
+                      self.__day + other.days)
+            self._checkOverflow(t.year)
+            result = self.__class__(t.year, t.month, t.day)
+            return result
+        raise TypeError
+        # XXX Should be 'return NotImplemented', but there's a bug in 2.2...
+
+    def __sub__(self, other):
+        """
+        if isinstance(other, timedelta):  # Doesn't exist (yet)
+            return self + timedelta(-other.days)
+        """
+        if isinstance(other, DonjonDate):
+            days1 = self.to_ordinal()
+            days2 = other.to_ordinal()
+            return days1 - days2
+        return NotImplemented
 
     def weekday(self):
         return (self.to_ordinal() % self.__days_in_week) + 1

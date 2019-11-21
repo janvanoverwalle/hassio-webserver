@@ -16,12 +16,17 @@ def main():
     current_date = ElderanDate.today()
     print(f'{current_date.descr_format()}')
 
-    return  # temporary
+    # return  # temporary
 
-    calendar.campaign_start = '2026-3-11'
-    calendar.today = '2026-8-15'
+    # calendar.campaign_start = '2026-3-11'
+    # calendar.today = '2026-8-15'
 
-    dates = ['2026-7-22', '2025-7-22', '2027-7-22', '2026-3-11']
+    dates = [
+        ElderanDate('2026-7-22'),
+        ElderanDate('2025-7-22'),
+        ElderanDate('2027-7-22'),
+        ElderanDate('2026-3-11')
+    ]
 
     print(f'Today: {calendar.today}')
     print(f'Day of year: {calendar.day_of_year}')

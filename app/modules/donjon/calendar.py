@@ -2,26 +2,31 @@ import datetime
 import json
 import re
 from pathlib import Path
-from .date import DonjonDate
+from .date import DonjonDate, ElderanDate
 
 
 class DonjonCalendar(object):
-    def __init__(self, calendar_file, auto_save=True):
-        self._calendar_file = calendar_file
-        with open(self._calendar_file) as json_file:
-            self._json_data = json.load(json_file)
-        self.auto_save = auto_save
+    def __init__(self, calendar_file, **kwargs):
+        self.__calendar_file = calendar_file
+        with open(self.__calendar_file) as json_file:
+            self.__json_data = json.load(json_file)
+        self.__date_class = kwargs.get('date_class', DonjonDate)
+        self.auto_save = kwargs.get('auto_save', True)
+
+    @property
+    def date_class(self):
+        return self.__date_class
 
     def __str__(self):
-        return str(self._json_data)
+        return str(self.__json_data)
 
     def save(self, *args, **kwargs):
         if args:
             filename = args[0]
         else:
-            filename = kwargs.get('as', self._calendar_file)
+            filename = kwargs.get('as', self.__calendar_file)
         with open(filename, 'w') as json_file:
-            json.dump(self._json_data, json_file, indent=2)
+            json.dump(self.__json_data, json_file, indent=2)
 
     def _parse_date_parameters(self, *args, **kwargs):
         if len(args) == 1 and not kwargs:
@@ -97,21 +102,28 @@ class DonjonCalendar(object):
 
     @property
     def current_date(self):
-        return self._json_data.get('current_date', self.year)
+        return self.__json_data.get('current_date', self.year)
 
     @current_date.setter
     def current_date(self, value):
-        self._json_data['current_date'] = str(value)
+        self.__json_data['current_date'] = str(value)
         if self.auto_save:
             self.save()
 
     @property
     def campaign_start(self):
-        return self._json_data.get('campaign_start', f'{self.year}-1-1')
+        if not hasattr(self, '_campaign_start'):
+            start = self.__json_data.get('campaign_start', f'{self.year}-1-1')
+            self.__campaign_start = self.__date_class.from_iso_format(date)
+        return self.__campaign_start
 
     @campaign_start.setter
     def campaign_start(self, value):
-        self._json_data['campaign_start'] = str(value)
+        if isinstance(value, self.__date_class):
+            self.__campaign_start = value
+        else:
+            self.__campaign_start = self.__date_class.from_iso_format(value)
+        self.__json_data['campaign_start'] = str(self.__campaign_start)
         if self.auto_save:
             self.save()
 
@@ -119,110 +131,110 @@ class DonjonCalendar(object):
 
     @property
     def year(self):
-        return self._json_data['year']
+        return self.__json_data['year']
 
     def _set_year(self, value):
-        self._json_data['year'] = int(value)
+        self.__json_data['year'] = int(value)
         if self.auto_save:
             self.save()
 
     @property
     def days_in_year(self):
-        return self._json_data['year_len']
+        return self.__json_data['year_len']
 
     def _set_days_in_year(self, value):
-        self._json_data['year_len'] = int(value)
+        self.__json_data['year_len'] = int(value)
         if self.auto_save:
             self.save()
 
     @property
     def months_in_year(self):
-        return self._json_data['n_months']
+        return self.__json_data['n_months']
 
     def _set_months_in_year(self, value):
-        self._json_data['n_months'] = int(value)
+        self.__json_data['n_months'] = int(value)
         if self.auto_save:
             self.save()
 
     def get_months(self, month=None):
-        return self._get_element(self._json_data['months'], month)
+        return self._get_element(self.__json_data['months'], month)
 
     def _set_months(self, *args, **kwargs):
-        self._set_element(self._json_data['months'], *args, **kwargs)
-        self.months_in_year = len(self._json_data['months'])  # autosaves
+        self._set_element(self.__json_data['months'], *args, **kwargs)
+        self.months_in_year = len(self.__json_data['months'])  # autosaves
 
     def get_days_in_months(self, month=None):
         if isinstance(month, int):
             month = self.get_months(month)
-        return self._get_element(self._json_data['month_len'], month)
+        return self._get_element(self.__json_data['month_len'], month)
 
     def set_days_in_months(self, *args, **kwargs):
-        self._set_element(self._json_data['month_len'], *args, **kwargs)
+        self._set_element(self.__json_data['month_len'], *args, **kwargs)
         if self.auto_save:
             self.save()
 
     @property
     def days_in_week(self):
-        return self._json_data['week_len']
+        return self.__json_data['week_len']
 
     @days_in_week.setter
     def days_in_week(self, value):
-        self._json_data['week_len'] = int(value)
+        self.__json_data['week_len'] = int(value)
         if self.auto_save:
             self.save()
 
     def get_weekdays(self, weekday=None):
-        return self._get_element(self._json_data['weekdays'], weekday)
+        return self._get_element(self.__json_data['weekdays'], weekday)
 
     def set_weekdays(self, *args, **kwargs):
-        self._set_element(self._json_data['weekdays'], *args, **kwargs)
-        self.days_in_week = len(self._json_data['weekdays'])  # autosaves
+        self._set_element(self.__json_data['weekdays'], *args, **kwargs)
+        self.days_in_week = len(self.__json_data['weekdays'])  # autosaves
 
     @property
     def first_weekday(self):
-        return self._json_data['first_day']
+        return self.__json_data['first_day']
 
     @first_weekday.setter
     def first_weekday(self, value):
-        self._json_data['first_day'] = int(value)
+        self.__json_data['first_day'] = int(value)
         if self.auto_save:
             self.save()
 
     @property
     def number_of_moons(self):
-        return self._json_data['n_moons']
+        return self.__json_data['n_moons']
 
     @number_of_moons.setter
     def number_of_moons(self, value):
-        self._json_data['n_moons'] = int(value)
+        self.__json_data['n_moons'] = int(value)
         if self.auto_save:
             self.save()
 
     def get_moons(self, moon=None):
-        return self._get_element(self._json_data['moons'], moon)
+        return self._get_element(self.__json_data['moons'], moon)
 
     def set_moons(self, *args, **kwargs):
-        self._set_element(self._json_data['moons'], *args, **kwargs)
-        self.number_of_moons = len(self._json_data['moons'])  # autosaves
+        self._set_element(self.__json_data['moons'], *args, **kwargs)
+        self.number_of_moons = len(self.__json_data['moons'])  # autosaves
 
     def get_lunar_cycles(self, moon=None):
-        return self._get_element(self._json_data['lunar_cyc'], moon)
+        return self._get_element(self.__json_data['lunar_cyc'], moon)
 
     def set_lunar_cycles(self, *args, **kwargs):
-        self._set_element(self._json_data['lunar_cyc'], *args, **kwargs)
+        self._set_element(self.__json_data['lunar_cyc'], *args, **kwargs)
         if self.auto_save:
             self.save()
 
     def get_lunar_shifts(self, moon=None):
-        return self._get_element(self._json_data['lunar_shf'], moon)
+        return self._get_element(self.__json_data['lunar_shf'], moon)
 
     def set_lunar_shifts(self, *args, **kwargs):
-        self._set_element(self._json_data['lunar_shf'], *args, **kwargs)
+        self._set_element(self.__json_data['lunar_shf'], *args, **kwargs)
         if self.auto_save:
             self.save()
 
     def get_notes(self, *args, **kwargs):
-        notes = self._json_data['notes']
+        notes = self.__json_data['notes']
         if not args and not kwargs:
             return notes
         if args:
@@ -249,7 +261,7 @@ class DonjonCalendar(object):
         return {}
 
     def set_notes(self, *args, **kwargs):
-        self._set_element(self._json_data['notes'], *args, **kwargs)
+        self._set_element(self.__json_data['notes'], *args, **kwargs)
         if self.auto_save:
             self.save()
 
@@ -257,30 +269,38 @@ class DonjonCalendar(object):
 
     @property
     def day_of_year(self):
-        days = sum([self.get_days_in_months(i) for i in range(self.month_of_year-1)])
-        return days + self.day_of_month
+        days = sum([self.get_days_in_months(i) for i in range(self.today.month-1)])
+        return days + self.today.day
 
     def days_before(self, *args, **kwargs):
+        # TODO: Revise to use Date class
         if not args and not kwargs:
             return self.days_since()
         else:
             year, month, day = self._parse_date_parameters(*args, **kwargs)
             days_since = sum([self.get_days_in_months(i) for i in range(month-1)])
             days_since += day
-        while year < self.current_year:
+        while year < self.today.year:
             days_since += self.days_in_year
             year += 1
         return days_since
 
-    def days_since(self, *args, **kwargs):
-        if not args and not kwargs:
+    def days_since(self, date=None, **kwargs):
+        if not date and not kwargs:
+            date = self.__date_class('1-1-1')
+        if date:
+            if not isinstance(date, self.__date_class):
+                date = self.__date_class.from_iso_format(str(date))
+            return self.today - date
+
+        if kwargs:
+            year, month, day = self._parse_date_parameters(**kwargs)
+            days_since = sum([self.get_days_in_months(i+month) for i in range(self.today.month - month)])
+            days_since = days_since + (self.today.day - day)
+        else:
             year = self.year
             days_since = self.day_of_year
-        else:
-            year, month, day = self._parse_date_parameters(*args, **kwargs)
-            days_since = sum([self.get_days_in_months(i+month) for i in range(self.month_of_year - month)])
-            days_since = days_since + (self.day_of_month - day)
-        while year < self.current_year:
+        while year < self.today.year:
             days_since += self.days_in_year
             year += 1
         return days_since
@@ -298,19 +318,22 @@ class DonjonCalendar(object):
 
     @property
     def today(self):
-        return (self.current_year, self.month_of_year, self.day_of_month)
-        # TODO: format needs to be overwritten to account for custom ranges and months
-        # return datetime.datetime(today[0], today[1], today[2]).strftime(format)
+        if not hasattr(self, '_today'):
+            self.__today = self.__date_class.today()
+        return self.__today
 
     @today.setter
     def today(self, value):
-        year, month, day = self._parse_date_parameters(value)
-        self.current_year = year
-        self.month_of_year = month
-        self.day_of_month = day
+        if isinstance(value, self.__date_class):
+            self.__today = value
+        else:
+            self.__today = self.__date_class.from_iso_format(value)
+        self.__json_data['current_date'] = str(self.__today)
+        if self.auto_save:
+            self.save()
 
 
 class ElderanCalendar(DonjonCalendar):
     def __init__(self):
         path = Path(__file__).parents[2]/'data'/'elderan-calendar.json'
-        super().__init__(path)
+        super().__init__(path, date_class=ElderanDate)
