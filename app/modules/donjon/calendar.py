@@ -28,18 +28,6 @@ class DonjonCalendar(object):
         with open(filename, 'w') as json_file:
             json.dump(self.__json_data, json_file, indent=2)
 
-    def _parse_date_parameters(self, *args, **kwargs):
-        if len(args) == 1 and not kwargs:
-            date = list(map(int, re.split(r'\D+', str(args[0]))))
-            year = int(date[0])
-            month = int(date[1]) if len(date) > 1 else 0
-            day = int(date[2]) if len(date) > 2 else 0
-        else:
-            year = int(kwargs.get('year', kwargs.get('y', args[0])))
-            month = int(kwargs.get('month', kwargs.get('m', args[1] if len(args) > 1 else 0)))
-            day = int(kwargs.get('day', kwargs.get('d', args[2] if len(args) > 2 else 0)))
-        return year, month, day
-
     def _update_list(self, m_list, v_list):
         while len(m_list) > len(values):
             del m_list[-1]
@@ -113,7 +101,7 @@ class DonjonCalendar(object):
     @property
     def campaign_start(self):
         if not hasattr(self, '_campaign_start'):
-            start = self.__json_data.get('campaign_start', f'{self.year}-1-1')
+            date = self.__json_data.get('campaign_start', f'{self.year}-1-1')
             self.__campaign_start = self.__date_class.from_iso_format(date)
         return self.__campaign_start
 
@@ -233,32 +221,33 @@ class DonjonCalendar(object):
         if self.auto_save:
             self.save()
 
-    def get_notes(self, *args, **kwargs):
+    def get_notes(self, date=None, **kwargs):
         notes = self.__json_data['notes']
-        if not args and not kwargs:
-            return notes
-        if args:
-            datestamp = list(map(int, re.split(r'\D+', args[0])))
-            return notes['-'.join(list(map(str, datestamp)))]
-        if kwargs:
-            datestamp = kwargs.get('date', kwargs.get('datestamp'))
-            if datestamp:
-                datestamp = list(map(int, re.split(r'\D+', datestamp)))
-                return notes['-'.join(list(map(str, datestamp)))]
 
-            year = int(kwargs.get('year', kwargs.get('y', 0)))
-            month = int(kwargs.get('month', kwargs.get('m', 0)))
-            day = int(kwargs.get('day', kwargs.get('d', 0)))
-            if year and month and day:
-                return notes[f'{year}-{month}-{day}']
-            if year:
-                notes = {k: v for k, v in notes.items() if str(year) == k.split('-')[0]}
-            if month:
-                notes = {k: v for k, v in notes.items() if str(month) == k.split('-')[1]}
-            if day:
-                notes = {k: v for k, v in notes.items() if str(day) == k.split('-')[2]}
+        if not date and not kwargs:
             return notes
-        return {}
+
+        if date:
+            if not isinstance(date, DonjonDate):
+                date = self.__date_class.from_iso_format(str(date))
+            return notes.get(f'{date.year}-{date.month}-{date.day}')
+
+        if not kwargs:
+            return None
+
+        year = int(kwargs.get('year', kwargs.get('y', 0)))
+        month = int(kwargs.get('month', kwargs.get('m', 0)))
+        day = int(kwargs.get('day', kwargs.get('d', 0)))
+
+        if year and month and day:
+            return notes.get(f'{year}-{month}-{day}')
+        if year:
+            notes = {k: v for k, v in notes.items() if str(year) == k.split('-')[0]}
+        if month:
+            notes = {k: v for k, v in notes.items() if str(month) == k.split('-')[1]}
+        if day:
+            notes = {k: v for k, v in notes.items() if str(day) == k.split('-')[2]}
+        return notes if notes else None
 
     def set_notes(self, *args, **kwargs):
         self._set_element(self.__json_data['notes'], *args, **kwargs)
@@ -271,50 +260,6 @@ class DonjonCalendar(object):
     def day_of_year(self):
         days = sum([self.get_days_in_months(i) for i in range(self.today.month-1)])
         return days + self.today.day
-
-    def days_before(self, *args, **kwargs):
-        # TODO: Revise to use Date class
-        if not args and not kwargs:
-            return self.days_since()
-        else:
-            year, month, day = self._parse_date_parameters(*args, **kwargs)
-            days_since = sum([self.get_days_in_months(i) for i in range(month-1)])
-            days_since += day
-        while year < self.today.year:
-            days_since += self.days_in_year
-            year += 1
-        return days_since
-
-    def days_since(self, date=None, **kwargs):
-        if not date and not kwargs:
-            date = self.__date_class('1-1-1')
-        if date:
-            if not isinstance(date, self.__date_class):
-                date = self.__date_class.from_iso_format(str(date))
-            return self.today - date
-
-        if kwargs:
-            year, month, day = self._parse_date_parameters(**kwargs)
-            days_since = sum([self.get_days_in_months(i+month) for i in range(self.today.month - month)])
-            days_since = days_since + (self.today.day - day)
-        else:
-            year = self.year
-            days_since = self.day_of_year
-        while year < self.today.year:
-            days_since += self.days_in_year
-            year += 1
-        return days_since
-
-    def weekday(self, *args, **kwargs):
-        if not args and not kwargs:
-            days_since = self.days_since()
-        else:
-            year, month, day = self._parse_date_parameters(*args, **kwargs)
-            days_since = self.days_before(year, month, day)
-
-        days_since += self.first_weekday
-        weekday = days_since % self.days_in_week
-        return self.get_weekdays(weekday-1)  # -1 to account for 0-indexed list
 
     @property
     def today(self):
@@ -331,6 +276,54 @@ class DonjonCalendar(object):
         self.__json_data['current_date'] = str(self.__today)
         if self.auto_save:
             self.save()
+
+    def days_before(self, date=None):
+        if not date:
+            date = self.today
+        elif not isinstance(date, self.__date_class):
+            date = self.__date_class.from_iso_format(str(date))
+        return date.to_ordinal()
+
+    def days_since(self, date=None):
+        if not date:
+            date = self.__date_class.from_iso_format('1-1-1')
+        elif not isinstance(date, self.__date_class):
+            date = self.__date_class.from_iso_format(str(date))
+        return self.today - date
+
+    def weekday(self, date=None):
+        if not date:
+            date = self.__date_class.from_iso_format('1-1-1')
+        elif not isinstance(date, self.__date_class):
+            date = self.__date_class.from_iso_format(str(date))
+
+        y1 = self.__date_class.from_iso_format(f'{self.year}-1-1')
+        days_since = self.days_before(date) - self.days_before(y1)
+        days_since += self.first_weekday
+        weekday = days_since % self.days_in_week
+        return self.get_weekdays(weekday)
+
+    def to_json_day(self, date=None):
+        if not date:
+            date = self.today
+        json_data = {
+            str(date): {
+                'notes': self.get_notes(date)
+            }
+        }
+        return json.dumps(json_data if json_data else {})
+
+    def to_json_month(self, date=None):
+        if not date:
+            date = self.today
+        json_data = self.get_notes(year=date.year, month=date.month)
+        return json.dumps(json_data if json_data else {})
+
+    def to_json_year(self, date=None):
+        if not date:
+            date = self.today
+        json_data =  self.get_notes(year=date.year)
+        return json.dumps(json_data if json_data else {})
 
 
 class ElderanCalendar(DonjonCalendar):

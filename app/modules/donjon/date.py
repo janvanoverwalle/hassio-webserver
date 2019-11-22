@@ -204,22 +204,13 @@ class DonjonDate(object):
         return cmp((y1, m1, d1), (y2, m2, d2))
 
     def __add__(self, other):
-        # TODO: Make work (pulled directly from Python's atetime)
-        if isinstance(other, timedelta):
-            t = tmxxx(self.__year,
-                      self.__month,
-                      self.__day + other.days)
-            self._checkOverflow(t.year)
-            result = self.__class__(t.year, t.month, t.day)
-            return result
-        raise TypeError
-        # XXX Should be 'return NotImplemented', but there's a bug in 2.2...
+        if isinstance(other, int):
+            return self.__date_class.from_ordinal(self.to_ordinal() + other)
+        return NotImplemented
 
     def __sub__(self, other):
-        """
-        if isinstance(other, timedelta):  # Doesn't exist (yet)
-            return self + timedelta(-other.days)
-        """
+        if isinstance(other, int):  # 'timedelta' object doesn't exist (yet)
+            return cls.__date_class.from_ordinal(self.to_ordinal() - other)
         if isinstance(other, DonjonDate):
             days1 = self.to_ordinal()
             days2 = other.to_ordinal()

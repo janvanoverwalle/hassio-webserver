@@ -22,10 +22,11 @@ def main():
     # calendar.today = '2026-8-15'
 
     dates = [
-        ElderanDate('2026-7-22'),
-        ElderanDate('2025-7-22'),
-        ElderanDate('2027-7-22'),
-        ElderanDate('2026-3-11')
+        ElderanDate.from_iso_format('2026-7-22'),
+        ElderanDate.from_iso_format('2025-7-22'),
+        ElderanDate.from_iso_format('2027-7-22'),
+        ElderanDate.from_iso_format('2026-3-11'),
+        ElderanDate.from_iso_format('2026-7-20'),
     ]
 
     print(f'Today: {calendar.today}')
@@ -33,12 +34,19 @@ def main():
     print(f'Days since calendar start: {calendar.days_since()}')
     print(f'Days since campaign start: {calendar.days_since(calendar.campaign_start)}')
     print(f'Days since {dates[1]}: {calendar.days_since(dates[1])}')
-    print(f'Days before campaign start: {calendar.days_before(calendar.campaign_start)}')
-    print(f'Weekday (today): {calendar.weekday()}')
-    print(f'Weekday ({dates[0]}): {calendar.weekday(dates[0])}')
+    days_before = calendar.day_of_year - calendar.days_since(calendar.campaign_start)
+    print(f'Days before campaign start: {days_before}')
+    print(f'Weekday (today): {calendar.weekday(calendar.today)}')
+    print(f'Weekday ({dates[0]}): {calendar.weekday(dates[0])}')  # Sundas
     print(f'Weekday ({dates[1]}): {calendar.weekday(dates[1])}')  # No idea if this is correct
     print(f'Weekday ({dates[2]}): {calendar.weekday(dates[2])}')  # No idea if this is correct
-    print(f'Weekday ({dates[3]}): {calendar.weekday(dates[3])}')
+    print(f'Weekday ({dates[3]}): {calendar.weekday(dates[3])}')  # Tirdas
+    print(f'Notes (today): {calendar.get_notes(calendar.today)}')
+    print(f'Notes ({dates[4]}): {calendar.get_notes(dates[4])}')
+    print(f'Notes (month): {calendar.get_notes(year=2025, month=12)}')
+    print(f'JSON (today): {calendar.to_json_day()}')
+    print(f'JSON (month): {calendar.to_json_month()}')
+    print(f'JSON (year): {calendar.to_json_year()}')
 
 
 if __name__ == '__main__':
