@@ -108,7 +108,10 @@ class DonjonDate(object):
             json_data = json.load(json_file)
         default_year = json_data.get('year', 1)
         date_str = json_data.get('current_date', f'{default_year}-1-1')
-        return cls.from_iso_format(date_str)
+        era = json_data.get('era')
+        d = cls.from_iso_format(date_str)
+        d.era = era
+        return d
 
     # String conversions
 
@@ -131,6 +134,17 @@ class DonjonDate(object):
         return f'{weekday}, {day}{ord_ind} of {month}, {era}{year}'
 
     # Properties
+
+    @property
+    def era(self):
+        return self.__era
+
+    @era.setter
+    def era(self, value):
+        try:
+            self.__era = int(value)
+        except TypeError:
+            pass
 
     @property
     def year(self):

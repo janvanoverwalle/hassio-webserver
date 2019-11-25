@@ -100,7 +100,7 @@ class DonjonCalendar(object):
 
     @property
     def campaign_start(self):
-        if not hasattr(self, '_campaign_start'):
+        if not hasattr(self, '__campaign_start'):
             date = self.__json_data.get('campaign_start', f'{self.year}-1-1')
             self.__campaign_start = self.__date_class.from_iso_format(date)
         return self.__campaign_start
@@ -263,7 +263,7 @@ class DonjonCalendar(object):
 
     @property
     def today(self):
-        if not hasattr(self, '_today'):
+        if not hasattr(self, '__today'):
             self.__today = self.__date_class.today()
         return self.__today
 
@@ -274,6 +274,7 @@ class DonjonCalendar(object):
         else:
             self.__today = self.__date_class.from_iso_format(value)
         self.__json_data['current_date'] = str(self.__today)
+        self.__json_data['era'] = self.__today.era
         if self.auto_save:
             self.save()
 
