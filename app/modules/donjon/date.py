@@ -8,8 +8,14 @@ MINYEAR = 1
 MAXYEAR = 9999
 
 
+def cmp(a, b):
+    # Essentially the 'cmp' funcntion in Python2
+    return (a > b) - (a < b)
+
+
 def _cmperror(x, y):
-    raise TypeError(f"can't compare '{type(x).__name__}' to '{type(y).__name__}'")
+    raise TypeError((f'can\'t compare \'{type(x).__name__}\' '
+                     f'to \'{type(y).__name__}\''))
 
 
 def _ord_ind(n):
@@ -24,14 +30,12 @@ class DonjonDate(object):
         if not calendar_file:
             raise ValueError('no calendar file specified', calendar_file)
 
-        self.__calendar_file = calendar_file
-
-        with open(self.__calendar_file) as json_file:
+        with open(calendar_file) as json_file:
             json_data = json.load(json_file)
 
         if not json_data:
             raise ValueError('calendar file is empty or not json valid',
-                             self.__calendar_file)
+                             calendar_file)
 
         self.__weekdays = json_data.get('weekdays', [])
         self.__days_in_week = json_data.get('week_len', 0)
@@ -104,13 +108,12 @@ class DonjonDate(object):
 
     @classmethod
     def today(cls):
-        with open(cls(None).__calendar_file) as json_file:
+        with open(cls._CFG_PATH) as json_file:
             json_data = json.load(json_file)
         default_year = json_data.get('year', 1)
         date_str = json_data.get('current_date', f'{default_year}-1-1')
-        era = json_data.get('era')
         d = cls.from_iso_format(date_str)
-        d.era = era
+        d.era = json_data.get('era')
         return d
 
     # String conversions
@@ -171,7 +174,7 @@ class DonjonDate(object):
         if day is None:
             day = self.__day
         self._check_date_fields(year, month, day)
-        return date(year, month, day)
+        return self.__class__(year, month, day)
 
     # Comparisons
 
@@ -236,6 +239,8 @@ class DonjonDate(object):
 
 
 class ElderanDate(DonjonDate):
-    def __init__(self, year, month=None, day=None):
-        path = Path(__file__).parents[2]/'data'/'elderan-calendar.json'
-        super().__init__(path, year, month, day, 3)
+    _CFG_PATH = Path(__file__).parents[2]/'data'/'elderan-calendar.json'
+
+    def __init__(self, year, month=None, day=None, era=3, **kwargs):
+        _path = kwargs.get('calendar_file', ElderanDate._CFG_PATH)
+        super().__init__(_path, year, month, day, era)
