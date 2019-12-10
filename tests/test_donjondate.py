@@ -36,13 +36,16 @@ def test_description_format():
     date = ElderanDate(2026, 4, 20)
     assert date.descr_format() == 'Loredas, 20th of Rain\'s Hand, 3E2026'
 
+
 def test_properties():
     date = ElderanDate(2026, 4, 20)
     assert_date(date, (2026, 4, 20))
 
+
 def test_to_ordinal():
     date = ElderanDate(2026, 4, 20)
     assert date.to_ordinal() == 735186
+
 
 def test_replace():
     date = ElderanDate(2026, 4, 20)

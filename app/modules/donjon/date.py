@@ -121,6 +121,9 @@ class DonjonDate(object):
     def iso_format(self):
         return f'{self.__year:04d}-{self.__month:02d}-{self.__day:02d}'
 
+    def donjon_format(self):
+        return f'{self.__year}-{self.__month}-{self.__day}'
+
     __str__ = iso_format
 
     def __repr__(self):
@@ -239,7 +242,7 @@ class DonjonDate(object):
 
 
 class ElderanDate(DonjonDate):
-    _CFG_PATH = Path(__file__).parents[2]/'data'/'elderan-calendar.json'
+    _CFG_PATH = Path(__file__).parents[2]/'data'/'elderan'/'calendar.json'
 
     def __init__(self, year, month=None, day=None, era=3, **kwargs):
         _path = kwargs.get('calendar_file', ElderanDate._CFG_PATH)

@@ -3,13 +3,17 @@ import json
 import re
 from pathlib import Path
 from .date import DonjonDate, ElderanDate
+from ..weather import Weather
 
 
 class DonjonCalendar(object):
-    def __init__(self, calendar_file, **kwargs):
-        self.__calendar_file = calendar_file
+    def __init__(self, cfg_path, **kwargs):
+        self.__cfg_path = cfg_path
+        self.__calendar_file = self.__cfg_path/'calendar.json'
         with open(self.__calendar_file) as json_file:
             self.__json_data = json.load(json_file)
+        weather_file = self.__cfg_path/'weather.json'
+        self.weather = Weather(weather_file) if weather_file.exists() else None
         self.__date_class = kwargs.get('date_class', DonjonDate)
         self.auto_save = kwargs.get('auto_save', True)
 
@@ -230,14 +234,17 @@ class DonjonCalendar(object):
         if date:
             if not isinstance(date, DonjonDate):
                 date = self.__date_class.from_iso_format(str(date))
-            return notes.get(f'{date.year}-{date.month}-{date.day}')
+            return notes.get(date.donjon_format())
 
         if not kwargs:
             return None
 
-        year = int(kwargs.get('year', kwargs.get('y', 0)))
-        month = int(kwargs.get('month', kwargs.get('m', 0)))
-        day = int(kwargs.get('day', kwargs.get('d', 0)))
+        year = kwargs.get('year', kwargs.get('y'))
+        year = int(year) if year else year
+        month = kwargs.get('month', kwargs.get('m'))
+        month = int(month) if month else month
+        day = kwargs.get('day', kwargs.get('d'))
+        day = int(day) if day else day
 
         if year and month and day:
             return notes.get(f'{year}-{month}-{day}')
@@ -304,30 +311,42 @@ class DonjonCalendar(object):
         weekday = days_since % self.days_in_week
         return self.get_weekdays(weekday)
 
+    def _to_json(self, year, month=None, day=None):
+        if isinstance(year, DonjonDate):
+            date = year
+            day = date.day
+            month = date.month
+            year = date.year
+        else:
+            date = None
+        # TODO: Need all days in year/month, not just those with notes
+        notes = self.get_notes(year=year, month=month, day=day)
+        if date or not notes:
+            json_data = {str(date): {'notes': notes}}
+        else:
+            json_data = {k:{'notes': v} for k,v in notes.items()}
+        for k, v in json_data.items():
+            v['weather'] = self.weather.get_weather(k)
+            v['weather_descriptions'] = self.weather.get_weather_descriptions(k)
+        return json.dumps(json_data if json_data else {})
+
     def to_json_day(self, date=None):
         if not date:
             date = self.today
-        json_data = {
-            str(date): {
-                'notes': self.get_notes(date)
-            }
-        }
-        return json.dumps(json_data if json_data else {})
+        return self._to_json(date)
 
     def to_json_month(self, date=None):
         if not date:
             date = self.today
-        json_data = self.get_notes(year=date.year, month=date.month)
-        return json.dumps(json_data if json_data else {})
+        return self._to_json(year=date.year, month=date.month)
 
     def to_json_year(self, date=None):
         if not date:
             date = self.today
-        json_data =  self.get_notes(year=date.year)
-        return json.dumps(json_data if json_data else {})
+        return self._to_json(year=date.year)
 
 
 class ElderanCalendar(DonjonCalendar):
     def __init__(self):
-        path = Path(__file__).parents[2]/'data'/'elderan-calendar.json'
+        path = Path(__file__).parents[2]/'data'/'elderan'
         super().__init__(path, date_class=ElderanDate)
