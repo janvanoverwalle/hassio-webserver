@@ -6,5 +6,7 @@
   class="form-control {{ class }}"
   {% if attributes %} {{ attributes }} {% endif %}
   {% if default_value %} value="{{ default_value }}" {% endif %}
+  {% if onchange %} onchange="{{ onchange }}" {% endif %}
+  {% if onfocusout %} onfocusout="{{ onfocusout }}" {% endif %}
   placeholder="{{ placeholder }}" aria-describedby="{{ name }}_lbl">
 </div>

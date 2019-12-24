@@ -10,11 +10,11 @@ def main():
 
     # print('Tirdas, 11th of First Seed, 3E2026')
     start_date = ElderanDate(2026, 3, 11)
-    print(f'{start_date.descr_format()}')
+    # print(f'{start_date.descr_format()}')
 
     # print('Middas, 15th of Last Seed, 3E2026')
     current_date = ElderanDate.today()
-    print(f'{current_date.descr_format()}')
+    # print(f'{current_date.descr_format()}')
 
     # return  # temporary
 
@@ -29,6 +29,7 @@ def main():
         ElderanDate.from_iso_format('2026-7-20'),
     ]
 
+    """
     print(f'Today: {calendar.today}')
     print(f'Day of year: {calendar.day_of_year}')
     print(f'Days since calendar start: {calendar.days_since()}')
@@ -43,10 +44,18 @@ def main():
     print(f'Weekday ({dates[3]}): {calendar.weekday(dates[3])}')  # Tirdas
     print(f'Notes (today): {calendar.get_notes(calendar.today)}')
     print(f'Notes ({dates[4]}): {calendar.get_notes(dates[4])}')
-    print(f'Notes (month): {calendar.get_notes(year=2025, month=12)}')
+    print(f'Notes (month): {calendar.get_notes(year=2026, month=8)}')
+    """
+    for i in range(12):
+        print(f'{i:02d}: {len(calendar.get_all_dates_in(2026, i))}')
+    # print(len(calendar.get_all_dates_in(2026, 8, 15)))
+    # print(len(calendar.get_all_dates_in(2026, 8)))
+    # print(len(calendar.get_all_dates_in(2026)))
+    """
     print(f'JSON (today): {calendar.to_json_day()}')
     print(f'JSON (month): {calendar.to_json_month()}')
     print(f'JSON (year): {calendar.to_json_year()}')
+    """
 
 
 if __name__ == '__main__':

@@ -45,6 +45,10 @@ body {
   width: 32px;
 }
 
+.schedule-column {
+  width: 33.33%;
+}
+
 .month-header {
   width: 100%;
 }

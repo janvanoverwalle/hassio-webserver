@@ -8,7 +8,7 @@
       </tr>
       <tr>
         {% for weekday in calendar.weekdays %}
-          <th class="text-center">{{ weekday }}</th>
+          <th class="text-center {% if loop.index == calendar.ref_day %} bg-primary {% endif %}">{{ weekday }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -22,17 +22,25 @@
             <div>
               <h6>Events</h6>
               <ul>
-                {% for event in calendar.events[loop.index-1] %}
-                  <li>{{ event }}</li>
-                {% endfor %}
+                {% if calendar.events[loop.index-1] %}
+                  {% for event in calendar.events[loop.index-1] %}
+                    <li>{{ event }}</li>
+                  {% endfor %}
+                {% else %}
+                  <li>None</li>
+                {% endif %}
               </ul>
             </div>
             <div>
               <h6>Weather</h6>
               <ul>
-                {% for weather in calendar.weather.tags[loop.index-1] %}
-                  <li>{{ weather }}</li>
-                {% endfor %}
+                {% if calendar.weather.tags[loop.index-1] %}
+                  {% for weather in calendar.weather.tags[loop.index-1] %}
+                    <li>{{ weather }}</li>
+                  {% endfor %}
+                {% else %}
+                  <li>None</li>
+                {% endif %}
               </ul>
             </div>
           </td>

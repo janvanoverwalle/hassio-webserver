@@ -1,4 +1,4 @@
-<div class="table-responsive">
+
   <table class="table table-bordered mt-4">
     <thead class="thead-dark">
       <tr>
@@ -36,7 +36,7 @@
           {% endif %}
           <td class="month-cell">
             <div>
-              <p class="lead">{{ index+1 }}</p>
+              <p class="lead {% if loop.index == calendar.ref_day %} text-primary font-weight-bold {% endif %}">{{ index+1 }}</p>
             </div>
             {% if calendar.events[index] > 0 %}
               <div>
@@ -51,4 +51,3 @@
       </tr>
     </tbody>
   </table>
-</div>

@@ -20,9 +20,11 @@
       {% endwith %}
     </div>
     <div class="col-sm-3">
-      {% with name='current_day', label='Current Day', type='number', class='text-right', default_value=calendar.current_day %}
-        {% include "components/input.html" %}
-      {% endwith %}
+      <form method="post" id="current_day_form">
+        {% with name='current_day', label='Current Day', type='number', class='text-right', default_value=calendar.current_day, onfocusout='on_current_day_focusout(this)' %}
+          {% include "components/input.html" %}
+        {% endwith %}
+      </form>
     </div>
     <div class="col-sm-3">
       {% with name='days_passed', label='Days Passed', type='number', class='bg-white text-right', default_value=calendar.days_passed, attributes='readonly' %}

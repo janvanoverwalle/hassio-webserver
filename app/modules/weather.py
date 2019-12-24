@@ -31,10 +31,10 @@ class Weather(object):
 
     def set_weather(self, date, *args):
         if not weather:
-            del self.__json_data[str(date)]
+            del self.__json_data['weather'][str(date)]
         else:
             data = args[0] if isinstance(weather[0], (list, tuple)) else args
-            self.__json_data[str(date)] = list(data)
+            self.__json_data['weather'][str(date)] = list(data)
         if self.auto_save:
             self.save()
 

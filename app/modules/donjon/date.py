@@ -39,6 +39,7 @@ class DonjonDate(object):
 
         self.__weekdays = json_data.get('weekdays', [])
         self.__days_in_week = json_data.get('week_len', 0)
+        self.__first_day_of_week = 0
         self.__months = json_data.get('months', [])
         self.__days_in_month = json_data.get('month_len', [])
         self.__days_in_year = json_data.get('year_len', 0)
@@ -124,14 +125,14 @@ class DonjonDate(object):
     def donjon_format(self):
         return f'{self.__year}-{self.__month}-{self.__day}'
 
-    __str__ = iso_format
+    __str__ = donjon_format
 
     def __repr__(self):
         c_name = self.__class__.__name__
         return f'{c_name}({self.__year}, {self.__month}, {self.__day})'
 
     def descr_format(self):
-        weekday = self.__weekdays[self.weekday()]
+        weekday = self.__weekdays[self.weekday()-1]
         day = self.__day
         ord_ind = _ord_ind(day)
         month = self.__months[self.__month-1]
@@ -163,6 +164,17 @@ class DonjonDate(object):
     @property
     def day(self):
         return self.__day
+
+    @property
+    def first_day_of_week(self):
+        return self.__first_day_of_week
+
+    @first_day_of_week.setter
+    def first_day_of_week(self, value):
+        try:
+            self.__first_day_of_week = int(value)
+        except TypeError:
+            pass
 
     # Conversions
 
@@ -223,14 +235,16 @@ class DonjonDate(object):
         y2, m2, d2 = other.__year, other.__month, other.__day
         return cmp((y1, m1, d1), (y2, m2, d2))
 
+    # Computations
+
     def __add__(self, other):
         if isinstance(other, int):
-            return self.__date_class.from_ordinal(self.to_ordinal() + other)
+            return self.__class__.from_ordinal(self.to_ordinal() + other)
         return NotImplemented
 
     def __sub__(self, other):
         if isinstance(other, int):  # 'timedelta' object doesn't exist (yet)
-            return cls.__date_class.from_ordinal(self.to_ordinal() - other)
+            return self.__class__.from_ordinal(self.to_ordinal() - other)
         if isinstance(other, DonjonDate):
             days1 = self.to_ordinal()
             days2 = other.to_ordinal()
@@ -238,7 +252,7 @@ class DonjonDate(object):
         return NotImplemented
 
     def weekday(self):
-        return (self.to_ordinal() % self.__days_in_week) + 1
+        return ((self.to_ordinal() + self.__first_day_of_week) % self.__days_in_week) + 1
 
 
 class ElderanDate(DonjonDate):
@@ -247,3 +261,4 @@ class ElderanDate(DonjonDate):
     def __init__(self, year, month=None, day=None, era=3, **kwargs):
         _path = kwargs.get('calendar_file', ElderanDate._CFG_PATH)
         super().__init__(_path, year, month, day, era)
+        self.first_day_of_week = 1

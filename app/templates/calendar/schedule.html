@@ -3,7 +3,7 @@
     <thead class="thead-dark">
       <tr>
         {% for day in calendar.days %}
-          <th class="text-center">{{ day }}</th>
+          <th class="text-center schedule-column">{{ day }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -15,20 +15,40 @@
           </div>
           <div>
             <h6>Events</h6>
-            <p>{{ calendar.events[loop.index-1] | join(", ") }}</p>
+            <p>
+              {% if calendar.events[loop.index-1] %}
+                {{ calendar.events[loop.index-1] | join(", ") }}
+              {% else %}
+                None
+              {% endif %}
+            </p>
           </div>
           <div>
             <h6>Celestial Events</h6>
-            <p>{{ calendar.celestial[loop.index-1] | join(", ") }}</p>
+            <p>
+              {% if calendar.celestial[loop.index-1] %}
+                {{ calendar.celestial[loop.index-1] | join(", ") }}
+              {% else %}
+                None
+              {% endif %}
+            </p>
           </div>
           <div>
             <h6>Weather</h6>
-            <p>{{ calendar.weather.tags[loop.index-1] | join(", ") }}</p>
-            <ul>
-              {% for description in calendar.weather.descriptions[loop.index-1] %}
-              <li>{{ description }}</li>
-              {% endfor %}
-            </ul>
+            <p>
+              {% if calendar.weather.tags[loop.index-1] %}
+                {{ calendar.weather.tags[loop.index-1] | join(", ") }}
+              {% else %}
+                None
+              {% endif %}
+            </p>
+            {% if calendar.weather.descriptions[loop.index-1] %}
+              <ul>
+                {% for description in calendar.weather.descriptions[loop.index-1] %}
+                  <li>{{ description }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
         </td>
       {% endfor %}

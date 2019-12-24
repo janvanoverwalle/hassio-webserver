@@ -5,7 +5,7 @@ from .modules.http_methods import HttpMethods
 from .modules.bootstrap_helper import BootstrapContextualClasses
 from .modules.terrain_tables import TerrainTables
 from .modules.ingredients import Ingredients
-from .modules.donjon.calendar import DonjonCalendar
+from .modules.donjon.calendar import ElderanCalendar
 from .utilities.generic import create_select_data, update_selected
 from .utilities.dice import Dice
 
@@ -154,104 +154,82 @@ def identifying(data_dict, args):
     )
 
 
-def construct_schedule_data(data_dict):
+def construct_schedule_data(data_dict, calendar, display_date=None):
+    if not display_date:
+        display_date = calendar.today
+
+    yesterday = calendar.get_day(-1, display_date)
+    today = calendar.get_day(0, display_date)
+    tomorrow = calendar.get_day(1, display_date)
+
     data_dict['calendar']['days'] = [
         'Yesterday',
         'Today',
         'Tomorrow'
     ]
     data_dict['calendar']['dates'] = [
-        'Tirdas, 14th of Last Seed, 3E2026',
-        'Middas, 15th of Last Seed, 3E2026',
-        'Turdas, 16th of Last Seed, 3E2026'
+        yesterday.descr_format(),
+        today.descr_format(),
+        tomorrow.descr_format()
     ]
     data_dict['calendar']['events'] = [
-        ['None'],
-        ['None'],
-        ['None']
+        calendar.get_notes(yesterday),
+        calendar.get_notes(today),
+        calendar.get_notes(tomorrow)
     ]
     data_dict['calendar']['celestial'] = [
-        ['None'],
-        ['Full moon (Lunitari)', 'Shooting star(s)'],
-        ['Full moon (Lunitari)']
+        calendar.celestial.get_celestial(yesterday),
+        calendar.celestial.get_celestial(today),
+        calendar.celestial.get_celestial(tomorrow)
     ]
     data_dict['calendar']['weather'] = {
         'tags': [
-            ['Warm', 'Sunny', 'Humid'],
-            ['Hot', 'Thunderheads', 'Showers', 'Stormy'],
-            ['Mild', 'Clear', 'Windy']
+            calendar.weather.get_weather(yesterday),
+            calendar.weather.get_weather(today),
+            calendar.weather.get_weather(tomorrow)
         ],
         'descriptions': [
-            [
-                'Uncomfortably warm days, pleasant nights.',
-                'Cloudless skies, excellent visibility.',
-                'Air laden with moisture, stifling.',
-                'Driving, unpredictable winds.'
-            ],
-            [
-                'Very warm days, warm nights.',
-                'Dense dark clouds, often lightning.',
-                'Occasional sprinkles, light rain & brief downpours.'
-            ],
-            [
-                'Agreeable temperatures all day, chilly nights.',
-                'Very few clouds in the sky, good visibility.',
-                'Strong, steady winds ideal for sailing.'
-            ]
+            calendar.weather.get_weather_descriptions(yesterday),
+            calendar.weather.get_weather_descriptions(today),
+            calendar.weather.get_weather_descriptions(tomorrow)
         ]
     }
 
 
-def construct_week_data(data_dict):
-    data_dict['calendar']['days_in_week'] = 7
-    data_dict['calendar']['weekdays'] = [
-        'Morndas',
-        'Tirdas',
-        'Middas',
-        'Turdas',
-        'Fredas',
-        'Loredas',
-        'Sundas'
-    ]
-    data_dict['calendar']['day_of_month'] = [ 8, 9, 10, 11, 12, 13, 14]
-    data_dict['calendar']['events'] = [
-        ['None'],
-        ['None'],
-        ['None'],
-        ['None'],
-        ['None'],
-        ['None'],
-        ['None']
-    ]
+def construct_week_data(data_dict, calendar, display_date=None):
+    if not display_date:
+        display_date = calendar.today
+
+    week = calendar.get_week_by_date(display_date)
+    data_dict['calendar']['ref_day'] = display_date.weekday() if display_date == calendar.today else -1
+    data_dict['calendar']['days_in_week'] = calendar.days_in_week
+    data_dict['calendar']['weekdays'] = calendar.get_weekdays()
+    data_dict['calendar']['day_of_month'] = [d.day for d in week]
+    data_dict['calendar']['events'] = [calendar.get_notes(d) for d in week]
     data_dict['calendar']['weather'] = {
-        'tags': [
-            ['Warm', 'Sunny', 'Humid'],
-            ['Hot', 'Thunderheads', 'Showers', 'Stormy'],
-            ['Mild', 'Clear', 'Windy']
-        ]
+        'tags': [calendar.weather.get_weather(d) for d in week]
     }
 
 
-def construct_month_data(data_dict):
-    from random import choices
+def construct_month_data(data_dict, calendar, display_date=None):
+    if not display_date:
+        display_date = calendar.today
 
-    data_dict['calendar']['days_in_week'] = 7
-    data_dict['calendar']['weekdays'] = [
-        'Morndas',
-        'Tirdas',
-        'Middas',
-        'Turdas',
-        'Fredas',
-        'Loredas',
-        'Sundas'
-    ]
-    data_dict['calendar']['days_in_month'] = 30
-    data_dict['calendar']['events'] = choices([0, 1, 2], [0.5, 0.3, 0.2], k=30)
-    data_dict['calendar']['first_weekday_of_month'] = 3
+    month = calendar.get_all_dates_in(display_date.year, display_date.month)
+    print(len(month))
+    data_dict['calendar']['ref_day'] = display_date.day if display_date == calendar.today else -1
+    data_dict['calendar']['days_in_week'] = calendar.days_in_week
+    data_dict['calendar']['weekdays'] = calendar.get_weekdays()
+    data_dict['calendar']['days_in_month'] = calendar.get_days_in_months(display_date.month-1)
+    data_dict['calendar']['events'] = [len(calendar.get_notes(d)) for d in month]
+    data_dict['calendar']['first_weekday_of_month'] = month[0].weekday()
 
 
-def construct_year_data(data_dict):
-    pass
+def construct_year_data(data_dict, calendar, display_date=None):
+    if not display_date:
+        display_date = calendar.today
+
+    data_dict['calendar']['days_in_year'] = calendar.days_in_year
 
 
 @app.route('/')
@@ -331,38 +309,54 @@ def dnd_herbalism():
 @app.route('/dnd/calendar', methods=[HttpMethods.GET, HttpMethods.POST])
 def dnd_calendar():
     args = request.form
+    calendar = ElderanCalendar()
 
+    if 'current_day' in args:
+        current_day = int(args.get('current_day'))
+        days_since = calendar.days_since(calendar.campaign_start)
+        calendar.advance_days(current_day - days_since)
+
+    display_date = calendar.today
     display_options = create_select_data(['Schedule', 'Week', 'Month', 'Year'])
     display_template = args.get('display_mode', 'schedule')
     if args.get('prev_month') or args.get('next_month'):
+        if args.get('prev_month'):
+            display_date = calendar.today - calendar.today.day - 1
+        if args.get('next_month'):
+            dim = calendar.get_days_in_months(calendar.today.month-1)
+            display_date = calendar.today + (dim - calendar.today.day + 1)
+        if display_date.day > 1:
+            display_date -= display_date.day - 1
         display_template = 'month'
-        # TODO: Pagination
 
     update_selected(display_options, display_template)
 
-    # calendar = DonjonCalendar('app/data/elderan-calendar.json')
-
     data_dict = {
+        'display_date': str(display_date),
         'display_options': display_options,
         'display_template': display_template,
         'calendar': {
-            'campaign_start': 'Tirdas, 11th of First Seed, 3E2026',
-            'current_day': 155,
-            'days_passed': 154,
-            'age' : 3,
-            'year': 2026,
-            'month': 'Last Seed'
+            'campaign_start': calendar.campaign_start.descr_format(),
+            'current_day': calendar.days_since(calendar.campaign_start),
+            'days_passed': max(0, calendar.days_since(calendar.campaign_start)-1),
+            'age' : display_date.era,
+            'year': display_date.year,
+            'month': calendar.get_months(display_date.month-1)
         }
     }
 
+    print(display_date)
+
     if display_template == 'schedule':
-        construct_schedule_data(data_dict)
+        construct_schedule_data(data_dict, calendar, display_date)
     elif display_template == 'week':
-        construct_week_data(data_dict)
+        construct_week_data(data_dict, calendar, display_date)
     elif display_template == 'month':
-        construct_month_data(data_dict)
+        construct_month_data(data_dict, calendar, display_date)
     elif display_template == 'year':
-        construct_year_data(data_dict)
+        construct_year_data(data_dict, calendar, display_date)
+
+    print(data_dict)
 
     return render_template('dnd/calendar.html',
                            favicon='dnd/calendar_b',

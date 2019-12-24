@@ -73,3 +73,22 @@ function _change_element_display(id, state) {
 
   element.classList.add('d-' + state)
 }
+
+/* Current Day Change Event */
+var _prev_current_day = -1
+
+function on_current_day_focusout(sender) {
+  if (sender.value == _prev_current_day) {
+    _prev_current_day = sender.value
+    return
+  }
+  _prev_current_day = sender.value
+  var display_mode_dropdown = document.getElementById('display_mode')
+  var current_display_mode = display_mode_dropdown.options[display_mode_dropdown.selectedIndex].value
+  var current_day_form = document.getElementById('current_day_form')
+  $("<input />").attr("type", "hidden")
+          .attr("name", "display_mode")
+          .attr("value", current_display_mode)
+          .appendTo(current_day_form);
+  current_day_form.submit()
+}
