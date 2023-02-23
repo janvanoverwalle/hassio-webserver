@@ -253,7 +253,6 @@ def index():
         }]
     }]
     return render_template('index.html',
-                           favicon='favicon',
                            title='Hass.io Web | Home',
                            pages=pages)
 
