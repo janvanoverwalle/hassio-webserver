@@ -232,6 +232,11 @@ def construct_year_data(data_dict, calendar, display_date=None):
     data_dict['calendar']['days_in_year'] = calendar.days_in_year
 
 
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html', title='Page not found')
+
+
 @app.route('/')
 def index():
     pages = [{
