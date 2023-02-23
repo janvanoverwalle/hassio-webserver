@@ -391,7 +391,7 @@ def surprise():
 def surprise_code(code: str):
     if not Surprise.validate_code(code):
         return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
-    return render_template('surprise/code.html', title='Hass.io Web | Code', code=code)
+    return render_template('surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}', code=code)
 
 
 if __name__ == "__main__":
