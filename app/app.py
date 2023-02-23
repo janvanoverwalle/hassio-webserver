@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, render_template, redirect, url_for
 from .modules.terrain_types import TerrainTypes
 from .modules.travel_methods import TravelMethods
 from .modules.http_methods import HttpMethods
@@ -6,6 +6,7 @@ from .modules.bootstrap_helper import BootstrapContextualClasses
 from .modules.terrain_tables import TerrainTables
 from .modules.ingredients import Ingredients
 from .modules.donjon.calendar import ElderanCalendar
+from .modules.surprise import Surprise
 from .utilities.generic import create_select_data, update_selected
 from .utilities.dice import Dice
 
@@ -368,10 +369,29 @@ def dnd_calendar():
                            **data_dict)
 
 
-@app.route('/dnd/calendar/schedule/<int:year>/<int:month>/<int:day>', \
-           methods=[HttpMethods.GET, HttpMethods.POST])
+@app.route('/dnd/calendar/schedule/<int:year>/<int:month>/<int:day>', methods=[HttpMethods.GET, HttpMethods.POST])
 def dnd_calendar_schedule(year, month, day):
+    # TODO: Implement
     pass
+
+
+@app.route('/surprise', methods=[HttpMethods.GET, HttpMethods.POST])
+def surprise():
+    if HttpMethods.is_get(request.method):
+        return render_template('surprise/index.html', title='Hass.io Web | Surprise!', unlocked_codes=Surprise.get_unlocked_codes())
+
+    code = request.form.get('input_code')
+    if not Surprise.validate_code(code):
+        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+
+    return redirect(url_for('surprise_code', code=code))
+
+
+@app.route('/surprise/<string:code>', methods=[HttpMethods.GET])
+def surprise_code(code: str):
+    if not Surprise.validate_code(code):
+        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+    return render_template('surprise/code.html', title='Hass.io Web | Code', code=code)
 
 
 if __name__ == "__main__":

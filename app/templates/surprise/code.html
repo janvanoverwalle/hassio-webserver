@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block base_content %}
+<div class="container my-5">
+  {% if code %}
+  {% include "surprise/code_" + code + ".html" %}
+  {% else %}
+  <p>No code provided. Maybe <a href="{{ url_for('surprise') }}">go back</a> and try again?</p>
+  {% endif %}
+  <div class="row justify-content-center mt-5">
+    <div class="col-sm-6">
+      <a class="button" href="{{ url_for('surprise') }}">Go back</a>
+    </div>
+  </div>
+</div>
+<!-- /container -->
+{% endblock %}

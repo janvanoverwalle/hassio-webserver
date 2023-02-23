@@ -68,6 +68,10 @@ body {
   }
 }
 
+.surprise-code {
+  font-family: Consolas, monaco, monospace;
+}
+
 /*** Theme Switch ***/
 
 /* The switch - the box around the slider */

@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block base_content %}
+<div class="container my-5">
+  <h2>Invalid code</h2>
+  <p>
+  {% if not invalid_code %}
+  That appears to be an invalid code. 
+  {% else %}
+  The code <span class="surprise-code">{{ invalid_code }}</span> appears to be invalid.
+  {% endif %}
+  Maybe <a href="{{ url_for('surprise') }}">go back</a> and try again?</p>
+</div>
+<!-- /container -->
+{% endblock %}
