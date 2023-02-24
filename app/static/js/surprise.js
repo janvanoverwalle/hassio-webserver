@@ -62,6 +62,7 @@ function handle_used_codes_list(container) {
         a.appendChild(span);
 
         const li = document.createElement('li');
+        li.classList.add('mt-2');
         li.appendChild(a);
 
         container.appendChild(li);

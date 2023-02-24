@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block base_content %}
 <div class="container my-5">
   {% if code %}
+  <span id="surprise-code" class="invisible">{{ code }}</span> <!-- Not super safe, but meh it's OK for this -->
   {% include "surprise/code_" + code + ".html" %}
   {% else %}
   <p>No code provided. Maybe <a href="{{ url_for('surprise') }}">go back</a> and try again?</p>
