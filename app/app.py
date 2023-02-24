@@ -386,7 +386,11 @@ def surprise():
         return render_template('surprise/index.html', title='Hass.io Web | Surprise!', unlocked_codes=Surprise.get_unlocked_codes())
 
     code = request.form.get('input_code')
+    if not code or not code.strip():
+        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code')
+
     if not Surprise.validate_code(code):
+        #return render_template('surprise/index.html', title='Hass.io Web | Surprise!', unlocked_codes=Surprise.get_unlocked_codes(), input_error='Invalid')
         return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
 
     return redirect(url_for('surprise_code', code=code))
@@ -396,6 +400,7 @@ def surprise():
 def surprise_code(code: str):
     if not Surprise.validate_code(code):
         return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+
     return render_template('surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}', code=code)
 
 
