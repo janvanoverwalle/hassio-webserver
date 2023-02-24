@@ -27,16 +27,13 @@ function handle_used_codes() {
 
 function handle_new_code(code) {
     var used_codes = localStorage.getItem('used_codes');
-    if (!used_codes) {
-        used_codes = [];
-    }
-    else {
-        used_codes = JSON.parse(used_codes);
-    }
+    used_codes = used_codes ? JSON.parse(used_codes) : [];
+
     if (!used_codes.includes(code)) {
         console.log('Caching code: ' + code);
         used_codes.push(code);
     }
+
     localStorage.setItem('used_codes', JSON.stringify(used_codes));
 }
 
@@ -51,6 +48,7 @@ function handle_used_codes_list(container) {
     }
 
     used_codes = JSON.parse(used_codes);
+    //used_codes.sort();
     for (code of used_codes) {
         const span = document.createElement('span');
         span.classList.add('surprise-code');
