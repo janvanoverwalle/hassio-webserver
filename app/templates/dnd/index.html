@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block base_content %}
+<div class="container my-5">
+  {% for page in pages %}
+  <h2>{{ page['header'] }}</h2>
+  <div class="list-group list-group-flush">
+    {% for section in page['sections'] %}
+      <a class="list-group-item list-group-item-action" href="{{ url_for(section['href']) }}">{{ section['text'] }}</a>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+<!-- /container -->
+{% endblock %}

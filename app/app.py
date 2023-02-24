@@ -240,6 +240,11 @@ def not_found(e):
 
 @app.route('/')
 def index():
+    return redirect(url_for('surprise'))
+
+
+@app.route('/dnd')
+def dnd():
     pages = [{
         'header': 'D&D',
         'sections': [{
@@ -254,7 +259,7 @@ def index():
         }]
     }]
     return render_template('index.html',
-                           title='Hass.io Web | Home',
+                           title='Hass.io Web | D&D',
                            pages=pages)
 
 
