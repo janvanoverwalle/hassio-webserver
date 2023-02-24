@@ -258,7 +258,7 @@ def dnd():
             'text': 'Herbalism'
         }]
     }]
-    return render_template('index.html',
+    return render_template('dnd/index.html',
                            title='Hass.io Web | D&D',
                            pages=pages)
 
