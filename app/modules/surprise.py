@@ -4,6 +4,7 @@ from enum import Enum
 
 class ValidCodes(Enum):
     TEST = 'test'
+    LOCKED = 'locked'
     CODE1 = 'code1'
     CODE2 = 'code2'
     CODE3 = 'code3'
@@ -19,17 +20,18 @@ class ValidCodes(Enum):
 
 
 class Surprise:
-    DATE_FORMAT = '%d/%m/%y %H:%M:%S'
+    DATE_FORMAT = '%d/%m/%y %H:%M'
     CODE_UNLOCK_DATES = {
-        ValidCodes.TEST: datetime.strptime('24/02/22 15:00:00', DATE_FORMAT)
+        ValidCodes.LOCKED: datetime.strptime('11/03/24 13:37', DATE_FORMAT)
     }
 
     CODE_TITLES = {
-        ValidCodes.TEST: 'Test'
+        ValidCodes.TEST: 'Test',
+        ValidCodes.LOCKED: 'Locked'
     }
 
     @classmethod
-    def get_unlocked_codes(cls):
+    def get_used_codes(cls):
         # TODO: Implement properly
         return [
             ValidCodes.TEST.value
@@ -40,7 +42,11 @@ class Surprise:
         return cls.CODE_TITLES.get(ValidCodes.from_string(code), 'unknown-code')
 
     @classmethod
-    def validate_code(cls, code: str):
+    def get_unlock_date_for_code(cls, code: str):
+        return cls.CODE_UNLOCK_DATES.get(ValidCodes.from_string(code))
+
+    @classmethod
+    def is_valid_code(cls, code: str):
         if not code:
             return False
         try:
@@ -48,3 +54,21 @@ class Surprise:
         except KeyError:
             return False
         return True
+
+    @classmethod
+    def is_unlocked_code(cls, code: str):
+        if not cls.is_valid_code(code):
+            return False
+        now = datetime.now()
+        unlock_date = cls.CODE_UNLOCK_DATES.get(ValidCodes.from_string(code), now)
+        return unlock_date <= now
+
+    @classmethod
+    def get_unlocked_codes(cls):
+        result = []
+        now = datetime.now()
+        for code in ValidCodes:
+            date = cls.CODE_UNLOCK_DATES.get(code, now)
+            if date <= now:
+                result.append(code.value)
+        return result

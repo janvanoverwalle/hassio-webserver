@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block base_content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-sm-6 ">
+      <h3 class="font-weight-bold">Locked code</h3>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-sm-6 ">
+      <p>
+      {% if not locked_code %}
+      That code is still locked{% if unlock_date %} until {{ unlock_date }}{% endif %}.
+      {% else %}
+      The code <span class="surprise-code">{{ locked_code }}</span> is still locked{% if unlock_date %} until {{ unlock_date }}{% endif %}.
+      {% endif %}
+      </p>
+      <p>Maybe <a href="{{ url_for('surprise') }}">go back</a> and try another one in the meantime?</p>
+    </div>
+  </div>
+</div>
+<!-- /container -->
+{% endblock %}

@@ -383,23 +383,30 @@ def dnd_calendar_schedule(year, month, day):
 @app.route('/surprise', methods=[HttpMethods.GET, HttpMethods.POST])
 def surprise():
     if HttpMethods.is_get(request.method):
-        return render_template('surprise/index.html', title='Hass.io Web | Surprise!', unlocked_codes=Surprise.get_unlocked_codes())
+        return render_template('surprise/index.html', title='Hass.io Web | Surprise!', used_codes=Surprise.get_used_codes())
 
     code = request.form.get('input_code')
     if not code or not code.strip():
         return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code')
 
-    if not Surprise.validate_code(code):
-        #return render_template('surprise/index.html', title='Hass.io Web | Surprise!', unlocked_codes=Surprise.get_unlocked_codes(), input_error='Invalid')
+    if not Surprise.is_valid_code(code):
         return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+
+    if not Surprise.is_unlocked_code(code):
+        date = Surprise.get_unlock_date_for_code(code)
+        return render_template('surprise/locked.html', title='Hass.io Web | Locked code', locked_code=code, unlock_date=date.strftime(Surprise.DATE_FORMAT))
 
     return redirect(url_for('surprise_code', code=code))
 
 
 @app.route('/surprise/<string:code>', methods=[HttpMethods.GET])
 def surprise_code(code: str):
-    if not Surprise.validate_code(code):
+    if not Surprise.is_valid_code(code):
         return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+
+    if not Surprise.is_unlocked_code(code):
+        date = Surprise.get_unlock_date_for_code(code)
+        return render_template('surprise/locked.html', title='Hass.io Web | Locked code', locked_code=code, unlock_date=date.strftime(Surprise.DATE_FORMAT))
 
     return render_template('surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}', code=code)
 

@@ -22,7 +22,7 @@
       </div>
     </div>
   </form>
-  {% if unlocked_codes %}
+  {% if used_codes %}
   <div class="row mt-5 justify-content-center">
     <div class="col-sm-6 ">
       <h3 class="font-weight-bold">Unlocked codes</h3>
@@ -30,8 +30,8 @@
   </div>
   <div class="row justify-content-center">
     <div class="col-sm-6">
-      {% for unlocked_code in unlocked_codes %}
-      <a href="{{ url_for('surprise_code', code=unlocked_code) }}" class="ml-4 h5"><span class="surprise-code">{{ unlocked_code }}</span></a>
+      {% for used_code in used_codes %}
+      <a href="{{ url_for('surprise_code', code=used_code) }}" class="ml-4 h5"><span class="surprise-code">{{ used_code }}</span></a>
       {% endfor %}
     </div>
   </div>
