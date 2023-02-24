@@ -9,8 +9,10 @@
     <div class="form-group row justify-content-center">
       <label for="inputCode" class="col-sm-1 col-form-label font-weight-bold">Code</label>
       <div class="col-sm-5">
-        <input type="text" class="form-control" id="inputCode" name="input_code" aria-label="input_code" aria-describedby="input_code" placeholder="Enter code" autocomplete="off">
-        <small id="input_code" class="form-text text-muted">Enter the code you found.</small>
+        <input type="text" class="form-control" id="inputCode" name="input_code" aria-label="input_code" placeholder="Enter code" autocomplete="off">
+        {% if input_error %}
+        <small id="input_error" class="form-text text-danger">{{ input_error }}</small>
+        {% endif %}
       </div>
     </div>
     <div class="row justify-content-center">
