@@ -283,6 +283,7 @@ def dnd_alchemy():
     return render_template('dnd/alchemy.html',
                            favicon='dnd/alchemy_b',
                            title='Hass.io Web | D&D | Alchemy',
+                           scripts=['dnd'],
                            **data_dict)
 
 
@@ -313,6 +314,7 @@ def dnd_herbalism():
     return render_template('dnd/herbalism.html',
                            favicon='dnd/herbalism_b',
                            title='Hass.io Web | D&D | Herbalism',
+                           scripts=['dnd'],
                            **data_dict)
 
 
@@ -371,6 +373,7 @@ def dnd_calendar():
     return render_template('dnd/calendar.html',
                            favicon='dnd/calendar_b',
                            title='Hass.io Web | D&D | Calendar',
+                           scripts=['dnd'],
                            **data_dict)
 
 
@@ -380,35 +383,38 @@ def dnd_calendar_schedule(year, month, day):
     pass
 
 
-@app.route('/surprise', methods=[HttpMethods.GET, HttpMethods.POST])
-def surprise():
-    if HttpMethods.is_get(request.method):
-        return render_template('surprise/index.html', title='Hass.io Web | Surprise!', used_codes=Surprise.get_used_codes())
-
-    code = request.form.get('input_code')
+def _validate_code(code: str):
     if not code or not code.strip():
-        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code')
+        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', scripts=['surprise'])
 
     if not Surprise.is_valid_code(code):
-        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', scripts=['surprise'], invalid_code=code)
 
     if not Surprise.is_unlocked_code(code):
         date = Surprise.get_unlock_date_for_code(code)
-        return render_template('surprise/locked.html', title='Hass.io Web | Locked code', locked_code=code, unlock_date=date.strftime(Surprise.DATE_FORMAT))
+        return render_template('surprise/locked.html', title='Hass.io Web | Locked code', scripts=['surprise'], locked_code=code, unlock_date=date.strftime(Surprise.DATE_FORMAT))
+
+
+@app.route('/surprise', methods=[HttpMethods.GET, HttpMethods.POST])
+def surprise():
+    if HttpMethods.is_get(request.method):
+        return render_template('surprise/index.html', title='Hass.io Web | Surprise!', scripts=['surprise'])
+
+    code = request.form.get('input_code')
+    result = _validate_code(code)
+    if result:
+        return result
 
     return redirect(url_for('surprise_code', code=code))
 
 
 @app.route('/surprise/<string:code>', methods=[HttpMethods.GET])
 def surprise_code(code: str):
-    if not Surprise.is_valid_code(code):
-        return render_template('surprise/invalid.html', title='Hass.io Web | Invalid code', invalid_code=code)
+    result = _validate_code(code)
+    if result:
+        return result
 
-    if not Surprise.is_unlocked_code(code):
-        date = Surprise.get_unlock_date_for_code(code)
-        return render_template('surprise/locked.html', title='Hass.io Web | Locked code', locked_code=code, unlock_date=date.strftime(Surprise.DATE_FORMAT))
-
-    return render_template('surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}', code=code)
+    return render_template('surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}', scripts=['surprise'], code=code)
 
 
 if __name__ == "__main__":

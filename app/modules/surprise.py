@@ -31,13 +31,6 @@ class Surprise:
     }
 
     @classmethod
-    def get_used_codes(cls):
-        # TODO: Implement properly
-        return [
-            ValidCodes.TEST.value
-        ]
-
-    @classmethod
     def get_title_for_code(cls, code: str):
         return cls.CODE_TITLES.get(ValidCodes.from_string(code), 'unknown-code')
 

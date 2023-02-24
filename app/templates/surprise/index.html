@@ -18,24 +18,26 @@
     <div class="row justify-content-center">
       <div class="col-sm-1"></div>
       <div class="col-sm-5">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Let's go!</button>
       </div>
     </div>
   </form>
-  {% if used_codes %}
-  <div class="row mt-5 justify-content-center">
-    <div class="col-sm-6 ">
-      <h3 class="font-weight-bold">Unlocked codes</h3>
+  <div id="used-codes-container" class="invisible">
+    <div class="row mt-5 justify-content-center">
+      <div class="col-sm-5">
+        <h3 class="font-weight-bold">Unlocked codes</h3>
+      </div>
+      <div class="col-sm-1">
+        <button type="button" class="btn btn-light" onclick="clear_used_codes()">Clear</button>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-sm-6">
+        <ul id="used-codes-list" class="list-unstyled">
+        </ul>
+      </div>
     </div>
   </div>
-  <div class="row justify-content-center">
-    <div class="col-sm-6">
-      {% for used_code in used_codes %}
-      <a href="{{ url_for('surprise_code', code=used_code) }}" class="ml-4 h5"><span class="surprise-code">{{ used_code }}</span></a>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
 </div>
 <!-- /container -->
 {% endblock %}
