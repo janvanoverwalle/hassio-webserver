@@ -1,10 +1,11 @@
+{% include "components/go_back.html" %}
 <div class="row justify-content-center">
   <div class="col col-lg-6">
     <h2>{% if code_title %}{{ code_title }}{% else %}Sliding puzzle{% endif %}</h2>
-    <p></p>
+    <small class="text-muted">Solve the puzzle for your next code!</small>
   </div>
 </div>
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-5">
   <audio id="audio-player">
     <source src="{{url_for('static', filename='audio/huddersfield-rain.mp3')}}" type="audio/mpeg">
     Your browser does not support the audio element.

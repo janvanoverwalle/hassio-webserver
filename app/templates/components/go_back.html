@@ -1,0 +1,8 @@
+<div class="row justify-content-center">
+    {% if not col_width %}
+      {% set col_width = '6' %}
+    {% endif %}
+    <div class="col col-lg-{{ col_width }}">
+      <a class="button bi-arrow-left-circle" href="{{ url_for('surprise') }}"><span class="ml-2">Go back</span></a>
+    </div>
+  </div>

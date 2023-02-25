@@ -171,7 +171,7 @@ function sliding_puzzle_game() {
         setTimeout(setup, delay, tiles[i]);
         delay += 50;
     }
-    //setTimeout(shuffle, delay, 30);
+    setTimeout(shuffle, delay, 30);
 
     function setup(tile) {
         var tileId = tile.getAttribute("value");

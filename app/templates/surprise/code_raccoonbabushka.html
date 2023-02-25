@@ -1,10 +1,14 @@
+{% with col_width='10' %}
+  {% include "components/go_back.html" %}
+{% endwith %}
 <div class="row justify-content-center">
-  <div class="col col-lg-6">
-    <h2>Code</h2>
+  <div class="col col-lg-10">
+    <h2>{% if code_title %}{{ code_title }}{% else %}Sliding puzzle{% endif %}</h2>
+    <small class="text-muted">You're going on an adventure!</small>
   </div>
 </div>
-<div class="row justify-content-center">
-  <div class="col col-lg-6">
-    <p>You entered the following code: <span id="surprise-code" class="surprise-code">{{ code }}</span></p>
+<div class="row justify-content-center mt-5">
+  <div class="col col-lg-10">
+    <img src="{{url_for('static', filename='img/surprise/hotspots-marked.png')}}" class="img-fluid" alt="toerisme-hasselt">
   </div>
 </div>
