@@ -41,6 +41,10 @@ body {
   width: 12em;
 }
 
+.no-height {
+  height: 0px !important;
+}
+
 .icon_arrow {
   width: 32px;
 }
@@ -68,12 +72,7 @@ body {
   }
 }
 
-.surprise-code {
-  font-family: Consolas, monaco, monospace;
-  font-weight: bold;
-}
-
-/*** Theme Switch ***/
+/*#region Theme Switch ***/
 
 /* The switch - the box around the slider */
 .switch {
@@ -138,3 +137,156 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+/*#endregion*/
+
+/*#region Surprise*/
+.surprise-code {
+  font-family: Consolas, monaco, monospace;
+  font-weight: bold;
+}
+/*#endregion*/
+
+/*#region Sliding puzzle */
+.sliding-puzzle-figure {
+  margin: auto;
+  width: 540px;
+  height: 540px;
+  max-height: 70vh;
+  max-width: 70vh;
+}
+
+.sliding-puzzle-figure a {
+  cursor: pointer;
+}
+
+.sliding-puzzle-figure a#shuffle {
+  color: #E74C3C;
+}
+
+.sliding-puzzle-figure a#solve {
+  color: #3498DB;
+}
+
+.sliding-puzzle-figure .sliding-puzzle {
+  list-style-type: none;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-clip: border-box;
+  /* Firefox 4, Safari 5, Opera 10, IE 9 */
+  border: 18px solid #303030;
+  border-radius: 10px;
+  background-color: #303030;
+}
+
+.sliding-puzzle-figure .sliding-puzzle .tile {
+  position: absolute;
+  color: #1F1F1F;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 32.5%;
+  height: 32.5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  left: 0%;
+  top: 0%;
+  transition: all 500ms linear;
+  transition-timing-function: ease;
+  box-sizing: border-box;
+  background-color: #303030;
+  background-repeat: no-repeat;
+  background-size: 101%;
+}
+
+.sliding-puzzle-figure .sliding-puzzle .tile.error {
+  background-color: #F0867D;
+}
+
+@media only screen and (max-width: 650px) {
+  .sliding-puzzle-figure {
+    width: 90vw;
+    height: 90vw;
+    max-height: 100vh;
+  }
+
+  .sliding-puzzle-figure .sliding-puzzle {
+    border-width: 10px;
+    border-radius: 14px;
+  }
+
+  .sliding-puzzle-figure .tile {
+    font-size: 1em;
+  }
+}
+
+.tile-1 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_001.png');
+}
+
+.tile-2 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_002.png');
+}
+
+.tile-3 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_003.png');
+}
+
+.tile-4 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_004.png');
+}
+
+.tile-5 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_005.png');
+}
+
+.tile-6 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_006.png');
+}
+
+.tile-7 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_007.png');
+}
+
+.tile-8 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_008.png');
+}
+
+.tile-9 {
+  background-image: url('../img/surprise/sliding_puzzle/image_part_009.png');
+}
+
+/* The flip box container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.flip-box {
+  background-color: transparent;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 5s;
+  transform-style: preserve-3d;
+}
+
+/* Position the front and back side */
+.flip-box-front, .flip-box-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the back side */
+.flip-box-back {
+  transform: rotateY(180deg);
+}
+/*#endregion*/

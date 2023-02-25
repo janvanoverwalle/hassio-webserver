@@ -4,10 +4,10 @@ from enum import Enum
 
 class ValidCodes(Enum):
     TEST = 'test'
-    LOCKED = 'locked'
-    CODE1 = 'code1'
-    CODE2 = 'code2'
+    HUDDERSFIELD_RAIN = 'huddersfieldrain'
+    RACCOON_BABUSHKA = 'raccoonbabushka'
     CODE3 = 'code3'
+    CODE4 = 'code4'
 
     @staticmethod
     def from_string(code: str):
@@ -20,14 +20,18 @@ class ValidCodes(Enum):
 
 
 class Surprise:
-    DATE_FORMAT = '%d/%m/%y %H:%M'
+    DATE_FORMAT = '%d/%m/%Y %H:%M'
     CODE_UNLOCK_DATES = {
-        ValidCodes.LOCKED: datetime.strptime('11/03/24 13:37', DATE_FORMAT)
+        ValidCodes.HUDDERSFIELD_RAIN: datetime.strptime('10/03/2023 10:00', DATE_FORMAT),
+        ValidCodes.RACCOON_BABUSHKA: datetime.strptime('17/03/2023 10:00', DATE_FORMAT),
+        ValidCodes.CODE3: datetime.strptime('24/03/2023 10:00', DATE_FORMAT),
+        ValidCodes.CODE4: datetime.strptime('31/03/2023 10:00', DATE_FORMAT)
     }
 
     CODE_TITLES = {
         ValidCodes.TEST: 'Test',
-        ValidCodes.LOCKED: 'Locked'
+        ValidCodes.HUDDERSFIELD_RAIN: 'Huddersfield Rain',
+        ValidCodes.RACCOON_BABUSHKA: 'Raccoon Babushka'
     }
 
     @classmethod

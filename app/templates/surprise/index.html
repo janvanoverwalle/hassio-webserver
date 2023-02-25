@@ -1,38 +1,35 @@
 {% extends "base.html" %} {% block base_content %}
 <div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-sm-6 ">
-      <h3 class="font-weight-bold">Surprise code</h3>
+    <div class="col col-lg-6">
+      <h3 class="font-weight-bold">Mystery code</h3>
     </div>
   </div>
   <form method=post>
     <div class="form-group row justify-content-center">
-      <label for="inputCode" class="col-sm-1 col-form-label font-weight-bold">Code</label>
-      <div class="col-sm-5">
+      <!--<label for="inputCode" class="col col-form-label font-weight-bold">Code</label>-->
+      <div class="col col-lg-5">
         <input type="text" class="form-control" id="inputCode" name="input_code" aria-label="input_code" placeholder="Enter code" autocomplete="off">
         {% if input_error %}
         <small id="input_error" class="form-text text-danger">{{ input_error }}</small>
         {% endif %}
       </div>
-    </div>
-    <div class="row justify-content-center">
-      <div class="col-sm-1"></div>
-      <div class="col-sm-5">
-        <button type="submit" class="btn btn-primary">Let's go!</button>
+      <div class="col-2 col-lg-1">
+        <button type="submit" class="btn btn-primary">Reveal</button>
       </div>
     </div>
   </form>
   <div id="used-codes-container" class="invisible">
     <div class="row mt-5 justify-content-center">
-      <div class="col-sm-5">
-        <h3 class="font-weight-bold">Unlocked codes</h3>
+      <div class="col col-lg-5">
+        <h4 class="font-weight-bold">Unlocked codes</h4>
       </div>
-      <div class="col-sm-1">
+      <div class="col-2 col-lg-1">
         <button type="button" class="btn btn-light" onclick="clear_used_codes()">Clear</button>
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="col-sm-6">
+      <div class="col col-lg-6">
         <ul id="used-codes-list" class="list-unstyled">
         </ul>
       </div>

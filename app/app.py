@@ -240,7 +240,7 @@ def not_found(e):
 
 @app.route('/')
 def index():
-    return redirect(url_for('surprise'))
+    return redirect(url_for('dnd'))
 
 
 @app.route('/dnd')
@@ -395,10 +395,10 @@ def _validate_code(code: str):
         return render_template('surprise/locked.html', title='Hass.io Web | Locked code', scripts=['surprise'], locked_code=code, unlock_date=date.strftime(Surprise.DATE_FORMAT))
 
 
-@app.route('/surprise', methods=[HttpMethods.GET, HttpMethods.POST])
+@app.route('/mystery', methods=[HttpMethods.GET, HttpMethods.POST])
 def surprise():
     if HttpMethods.is_get(request.method):
-        return render_template('surprise/index.html', title='Hass.io Web | Surprise!', scripts=['surprise'])
+        return render_template('surprise/index.html', favicon='surprise/mystery', title='Hass.io Web | Surprise!', scripts=['surprise'])
 
     code = request.form.get('input_code')
     result = _validate_code(code)
@@ -408,13 +408,19 @@ def surprise():
     return redirect(url_for('surprise_code', code=code))
 
 
-@app.route('/surprise/<string:code>', methods=[HttpMethods.GET])
+@app.route('/mystery/<string:code>', methods=[HttpMethods.GET])
 def surprise_code(code: str):
     result = _validate_code(code)
     if result:
         return result
 
-    return render_template('surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}', scripts=['surprise'], code=code)
+    return render_template(
+        'surprise/code.html', title=f'Hass.io Web | {Surprise.get_title_for_code(code)}',
+        favicon='surprise/mystery',
+        scripts=['surprise'],
+        code=code,
+        code_title=Surprise.get_title_for_code(code)
+    )
 
 
 if __name__ == "__main__":

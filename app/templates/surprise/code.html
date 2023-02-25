@@ -1,16 +1,16 @@
 {% extends "base.html" %} {% block base_content %}
 <div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col col-lg-6">
+      <a class="button bi-arrow-left-circle" href="{{ url_for('surprise') }}"><span class="ml-2">Go back</span></a>
+    </div>
+  </div>
   {% if code %}
-  <span id="surprise-code" class="invisible">{{ code }}</span> <!-- Not super safe, but meh it's OK for this -->
+  <div id="surprise-code" class="invisible no-height">{{ code }}</div> <!-- Not super safe, but meh it's OK for this -->
   {% include "surprise/code_" + code + ".html" %}
   {% else %}
   <p>No code provided. Maybe <a href="{{ url_for('surprise') }}">go back</a> and try again?</p>
   {% endif %}
-  <div class="row justify-content-center mt-5">
-    <div class="col-sm-6">
-      <a class="button" href="{{ url_for('surprise') }}">Go back</a>
-    </div>
-  </div>
 </div>
 <!-- /container -->
 {% endblock %}
