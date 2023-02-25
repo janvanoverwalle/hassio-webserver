@@ -23,7 +23,7 @@ class Surprise:
     DATE_FORMAT = '%d/%m/%Y %H:%M'
     CODE_UNLOCK_DATES = {
         ValidCodes.HUDDERSFIELD_RAIN: datetime.strptime('10/03/2023 10:00', DATE_FORMAT),
-        #ValidCodes.RACCOON_BABUSHKA: datetime.strptime('17/03/2023 10:00', DATE_FORMAT),
+        ValidCodes.RACCOON_BABUSHKA: datetime.strptime('17/03/2023 10:00', DATE_FORMAT),
         ValidCodes.CODE3: datetime.strptime('24/03/2023 10:00', DATE_FORMAT),
         ValidCodes.CODE4: datetime.strptime('31/03/2023 10:00', DATE_FORMAT)
     }
