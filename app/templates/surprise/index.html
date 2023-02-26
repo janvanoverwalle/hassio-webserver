@@ -10,6 +10,7 @@
       <!--<label for="inputCode" class="col col-form-label font-weight-bold">Code</label>-->
       <div class="col col-lg-5">
         <input type="text" class="form-control" id="inputCode" name="input_code" aria-label="input_code" placeholder="Enter code" autocomplete="off">
+        <small class="form-text text-muted pl-1">Codes are case sensitive.</small>
         {% if input_error %}
         <small id="input_error" class="form-text text-danger">{{ input_error }}</small>
         {% endif %}

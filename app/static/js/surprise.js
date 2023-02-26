@@ -14,7 +14,7 @@ window.onload = (event) => {
 function clear_used_codes() {
     localStorage.removeItem('used_codes');
 
-    const el = document.getElementById("used-codes-container");
+    const el = document.getElementById('used-codes-container');
     if (el) {
         el.remove();
     }
@@ -47,7 +47,7 @@ function handle_new_code(code) {
 function handle_used_codes_list(container) {
     var used_codes = localStorage.getItem('used_codes');
     if (!used_codes) {
-        const el = document.getElementById("used-codes-container");
+        const el = document.getElementById('used-codes-container');
         if (el) {
             el.remove();
         }
@@ -73,7 +73,7 @@ function handle_used_codes_list(container) {
         container.appendChild(li);
     }
 
-    const el = document.getElementById("used-codes-container");
+    const el = document.getElementById('used-codes-container');
     if (el) {
         el.classList.remove('invisible');
     }
@@ -85,7 +85,7 @@ function sliding_puzzle_game() {
     // Source: https://github.com/danishmughal/sliding-puzzle
 
     // Data structure to hold positions of tiles
-    var parentX = document.querySelector(".sliding-puzzle").clientHeight;
+    var parentX = document.querySelector('.sliding-puzzle').clientHeight;
     var baseDistance = 33.8;
     var tileMap = {
         1: {
@@ -160,27 +160,59 @@ function sliding_puzzle_game() {
         if (position == 1) return [2, 4];
     }
 
+    document.getElementById('reset').addEventListener('click', () => {
+        localStorage.removeItem('slider_solved');
+        document.location.reload();
+    }, true);
+
     // Board setup according to the tileMap
     document.querySelector('#shuffle').addEventListener('click', shuffle, true);
     document.querySelector('#solve').addEventListener('click', solve, true);
+    var slider_solved = localStorage.getItem('slider_solved') === 'true';
+    if (!slider_solved) {
+        document.querySelector('.tile-3').remove();
+    }
     var tiles = document.querySelectorAll('.tile');
     var delay = 0;
     for (var i = 0; i < tiles.length; i++) {
-        tiles[i].addEventListener('click', tileClicked, true);
+        if (slider_solved) {
+            tiles[i].style.cursor = 'default';
+        }
+        else {
+            tiles[i].addEventListener('click', tileClicked, true);
+        }
 
         setTimeout(setup, delay, tiles[i]);
-        delay += 50;
+        if (!slider_solved) {
+            delay += 50;
+        }
     }
-    setTimeout(shuffle, delay, 30);
+
+    if (slider_solved) {
+        var elements = document.getElementsByClassName('flip-box-inner');
+        elements[0].style.transitionDuration = '2s';
+
+        elements = document.getElementsByClassName('flip-box-front');
+        elements[0].addEventListener('click', () => flipCard(), true);
+
+        elements = document.getElementsByClassName('flip-box-back');
+        elements[0].addEventListener('click', () => flipCard(0), true);
+    }
+    else {
+        setTimeout(shuffle, delay, 30);
+    }
 
     function setup(tile) {
-        var tileId = tile.getAttribute("value");
+        var tileId = tile.getAttribute('value');
+        if (tileId == '3') {
+            tileId = 'empty';
+        }
         // tile.style.left = tileMap[tileId].left + '%';
         // tile.style.top = tileMap[tileId].top + '%';
         var factor = 100;
         var xMovement = parentX * (tileMap[tileId].left / factor);
         var yMovement = parentX * (tileMap[tileId].top / factor);
-        var translateString = "translateX(" + xMovement + "px) " + "translateY(" + yMovement + "px)"
+        var translateString = 'translateX(' + xMovement + 'px) ' + 'translateY(' + yMovement + 'px)'
         tile.style.webkitTransform = translateString;
         recolorTile(tile, tileId);
     }
@@ -193,8 +225,16 @@ function sliding_puzzle_game() {
         }
     }
 
-    var solved = false;
+    function flipCard(degrees) {
+        if (degrees === undefined) {
+            degrees = 180;
+        }
+        var elements = document.getElementsByClassName('flip-box-inner');
+        elements[0].style.webkitTransform = 'rotateY(' + degrees + 'deg)';
+    }
+
     function puzzleSolved(timeout) {
+        var solved = localStorage.getItem('slider_solved') === 'true';
         if (solved) {
             return;
         }
@@ -206,15 +246,12 @@ function sliding_puzzle_game() {
 
         timeout = timeout === undefined ? 500 : timeout;
         setTimeout(() => {
-            document.getElementById("audio-player").play();
+            document.getElementById('audio-player').play();
         }, timeout);
 
-        setTimeout(() => {
-            var elements = document.getElementsByClassName("flip-box-inner");
-            elements[0].style.webkitTransform = "rotateY(180deg)";
-        }, timeout + 10 * 1000);
+        setTimeout(flipCard, timeout + 10 * 1000);
 
-        solved = true;
+        localStorage.setItem('slider_solved', 'true');
     }
 
     // Moves tile to empty spot
@@ -223,9 +260,9 @@ function sliding_puzzle_game() {
         // Check if Tile can be moved 
         // (must be touching empty tile)
         // (must be directly perpendicular to empty tile)
-        var tileNumber = tile.getAttribute("value");
+        var tileNumber = tile.getAttribute('value');
         if (!tileMovable(tileNumber)) {
-            console.log("Tile " + tileNumber + " can't be moved.");
+            console.log('Tile ' + tileNumber + ' can\'t be moved.');
             return;
         }
 
@@ -254,7 +291,7 @@ function sliding_puzzle_game() {
         var factor = 100;
         var xMovement = parentX * (emptyLeft / factor);
         var yMovement = parentX * (emptyTop / factor);
-        var translateString = "translateX(" + xMovement + "px) " + "translateY(" + yMovement + "px)"
+        var translateString = 'translateX(' + xMovement + 'px) ' + 'translateY(' + yMovement + 'px)';
         tile.style.webkitTransform = translateString;
 
         tileMap[tileNumber].top = emptyTop;
@@ -283,7 +320,7 @@ function sliding_puzzle_game() {
                 continue;
             }
 
-            var prevKey = key == 4 ? "empty" : key == "empty" ? 2 : key-1;
+            var prevKey = key == 4 ? 'empty' : key == 'empty' ? 2 : key - 1;
             if (tileMap[key].position < tileMap[prevKey].position) {
                 return false;
             }
@@ -297,9 +334,9 @@ function sliding_puzzle_game() {
     // Check if tile is in correct place!
     function recolorTile(tile, tileId) {
         if (tileId == tileMap[tileId].position) {
-            tile.classList.remove("error");
+            tile.classList.remove('error');
         } else {
-            tile.classList.add("error");
+            tile.classList.add('error');
         }
     }
 
@@ -311,7 +348,7 @@ function sliding_puzzle_game() {
         var durations = [];
         tiles.forEach(t => {
             durations.push(t.style.transitionDuration);
-            t.style.transitionDuration = "10ms";
+            t.style.transitionDuration = '10ms';
         })
         clearTimers(solveTimeouts);
         shuffleLoop();
@@ -331,7 +368,7 @@ function sliding_puzzle_game() {
             tiles.forEach(t => {
                 t.style.transitionDuration = durations.pop();
             })
-        }, shuffleDelay+shuffleStep);
+        }, shuffleDelay + shuffleStep);
     }
 
     var lastShuffled;
@@ -386,7 +423,7 @@ function sliding_puzzle_game() {
             var tile = tiles[tileNumber - 1];
             solveTimeouts.push(setTimeout(moveTile, timeout, tile, false));
         }
-        puzzleSolved(timeout+500);
+        puzzleSolved(timeout + 500);
     }
 }
 //#endregion

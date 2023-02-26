@@ -7,7 +7,7 @@ class ValidCodes(Enum):
     HUDDERSFIELD_RAIN = 'huddersfieldrain'
     RACCOON_BABUSHKA = 'raccoonbabushka'
     CODE3 = 'code3'
-    CODE4 = 'code4'
+    I_LOVE_YOU = 'iloveyou'
 
     @staticmethod
     def from_string(code: str):
@@ -25,13 +25,15 @@ class Surprise:
         ValidCodes.HUDDERSFIELD_RAIN: datetime.strptime('10/03/2023 10:00', DATE_FORMAT),
         ValidCodes.RACCOON_BABUSHKA: datetime.strptime('17/03/2023 10:00', DATE_FORMAT),
         ValidCodes.CODE3: datetime.strptime('24/03/2023 10:00', DATE_FORMAT),
-        ValidCodes.CODE4: datetime.strptime('31/03/2023 10:00', DATE_FORMAT)
+        ValidCodes.I_LOVE_YOU: datetime.strptime('31/03/2023 10:00', DATE_FORMAT)
     }
 
     CODE_TITLES = {
         ValidCodes.TEST: 'Test',
         ValidCodes.HUDDERSFIELD_RAIN: 'Huddersfield Rain',
-        ValidCodes.RACCOON_BABUSHKA: 'Raccoon Babushka'
+        ValidCodes.RACCOON_BABUSHKA: 'Raccoon Babushka',
+        ValidCodes.CODE3: 'Code 3',
+        ValidCodes.I_LOVE_YOU: 'I Love You ❤️'
     }
 
     @classmethod
