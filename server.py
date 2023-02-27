@@ -1,7 +1,8 @@
+import sys
+
 from waitress import serve
 from app.app import app
 from getopt import getopt, GetoptError
-import sys
 
 
 def print_help(exit_code=None):
