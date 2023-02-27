@@ -4,9 +4,9 @@ from enum import Enum
 
 class ValidCodes(Enum):
     TEST = 'test'
-    HUDDERSFIELD_RAIN = 'huddersfieldrain'
+    EL_BROCCO = 'elbrocco'
+    LUSJIFER = 'lusjifer'
     RACCOON_BABUSHKA = 'raccoonbabushka'
-    CODE3 = 'code3'
     I_LOVE_YOU = 'iloveyou'
 
     @staticmethod
@@ -22,17 +22,17 @@ class ValidCodes(Enum):
 class Surprise:
     DATE_FORMAT = '%d/%m/%Y %H:%M'
     CODE_UNLOCK_DATES = {
-        ValidCodes.HUDDERSFIELD_RAIN: datetime.strptime('10/03/2023 10:00', DATE_FORMAT),
-        ValidCodes.RACCOON_BABUSHKA: datetime.strptime('17/03/2023 10:00', DATE_FORMAT),
-        ValidCodes.CODE3: datetime.strptime('24/03/2023 10:00', DATE_FORMAT),
-        ValidCodes.I_LOVE_YOU: datetime.strptime('31/03/2023 10:00', DATE_FORMAT)
+        #ValidCodes.EL_BROCCO: datetime.strptime('10/03/2023 10:00', DATE_FORMAT),
+        #ValidCodes.LUSJIFER: datetime.strptime('17/03/2023 10:00', DATE_FORMAT),
+        #ValidCodes.RACCOON_BABUSHKA: datetime.strptime('24/03/2023 10:00', DATE_FORMAT),
+        #ValidCodes.I_LOVE_YOU: datetime.strptime('31/03/2023 10:00', DATE_FORMAT)
     }
 
     CODE_TITLES = {
         ValidCodes.TEST: 'Test',
-        ValidCodes.HUDDERSFIELD_RAIN: 'Huddersfield Rain',
+        ValidCodes.EL_BROCCO: 'El Brocco',
+        ValidCodes.LUSJIFER: 'Lusjifer',
         ValidCodes.RACCOON_BABUSHKA: 'Raccoon Babushka',
-        ValidCodes.CODE3: 'Code 3',
         ValidCodes.I_LOVE_YOU: 'I Love You ❤️'
     }
 
